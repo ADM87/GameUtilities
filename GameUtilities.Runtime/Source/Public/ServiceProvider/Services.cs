@@ -81,26 +81,33 @@ namespace ADM87.GameUtilities.ServiceProvider
         }
 
         /// <summary>
-        /// Retrieves the service dependencies for a given implementation type.
+        /// Retrieves the service dependencies of a given implementation type.
         /// </summary>
-        /// <param name="implementationType">The implementation type to retrieve service dependencies for.</param>
-        /// <returns>An enumerable collection of PropertyInfo objects representing the service dependencies.</returns>
+        /// <param name="implementationType">The type of the implementation.</param>
+        /// <returns>An enumerable collection of <see cref="PropertyInfo"/> objects representing the service dependencies.</returns>
+        /// <exception cref="MissingServiceDependencySetterException">Thrown when a service dependency property does not have a private setter.</exception>
+        /// <exception cref="InvalidServiceDependencyTypeException">Thrown when a service dependency property is not of an interface type.</exception>
         private static IEnumerable<PropertyInfo> GetServiceDependencies(Type implementationType)
         {
-            return implementationType
-                .GetProperties()
-                .Where(property => {
-                    if (property.GetCustomAttribute<ServiceDependencyAttribute>() == null)
-                        return false;
+            IEnumerable<PropertyInfo> properties = implementationType.GetProperties(BindingFlags.Instance
+                                                                                  | BindingFlags.NonPublic
+                                                                                  | BindingFlags.Public
+                                                                                  | BindingFlags.DeclaredOnly);
+            List<PropertyInfo> dependencies = new List<PropertyInfo>();
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.GetCustomAttribute<ServiceDependencyAttribute>() == null)
+                    continue;
 
-                    if (property.GetSetMethod(true) == null)
-                        throw new MissingServiceDependencySetterException(implementationType, property);
+                if (property.GetSetMethod(true) == null)
+                    throw new MissingServiceDependencySetterException(implementationType, property);
 
-                    if (!property.PropertyType.IsInterface)
-                        throw new InvalidServiceDependencyTypeException(implementationType, property);
+                if (!property.PropertyType.IsInterface)
+                    throw new InvalidServiceDependencyTypeException(implementationType, property);
 
-                    return true;
-                });
+                dependencies.Add(property);
+            }
+            return dependencies;
         }
     }
 }
