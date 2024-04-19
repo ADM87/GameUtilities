@@ -1,5 +1,4 @@
 using System.Reflection;
-using ADM87.GameUtilities.Linq;
 
 namespace ADM87.GameUtilities.ServiceProvider
 {
@@ -67,10 +66,11 @@ namespace ADM87.GameUtilities.ServiceProvider
             if (k_serviceCollection.ContainsKey(identityType))
                 throw new DuplicateServiceIdentityException(identityType);
 
-            k_serviceCollection.ForEach(kvp => {
+            foreach (var kvp in k_serviceCollection)
+            {
                 if (kvp.Value.Implementation.Equals(implementationType))
                     throw new DuplicateServiceImplementationException(identityType, implementationType);
-            });
+            }
 
             k_serviceCollection.Add(identityType, new ServiceDefinition {
                 Identity        = identityType,
