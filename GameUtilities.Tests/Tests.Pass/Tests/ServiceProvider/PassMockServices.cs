@@ -10,12 +10,12 @@ namespace GameUtilities.Tests
     [ServiceDefinition(typeof(ICollectedSingletonService), isSingleton: true)]
     public class CollectedSingletonService : ICollectedSingletonService {}
 
-    public interface ICollectedServiceWidthDependency
+    public interface ICollectedServiceWithDependency
     {
         ICollectedService ASimpleCollectedService { get; }
     }
-    [ServiceDefinition(typeof(ICollectedServiceWidthDependency))]
-    public class CollectedServiceWithDependency : ICollectedServiceWidthDependency
+    [ServiceDefinition(typeof(ICollectedServiceWithDependency))]
+    public class CollectedServiceWithDependency : ICollectedServiceWithDependency
     {
         [ServiceDependency]
         public ICollectedService ASimpleCollectedService { get; private set; }
@@ -27,11 +27,11 @@ namespace GameUtilities.Tests
     public interface IManualSingletonService {}
     public class ManualSingletonService : IManualSingletonService {}
 
-    public interface IManualServiceWidthDependency
+    public interface IManualServiceWithDependency
     {
         IManualService ASimpleManualService { get; }
     }
-    public class ManualServiceWithDependency : IManualServiceWidthDependency
+    public class ManualServiceWithDependency : IManualServiceWithDependency
     {
         [ServiceDependency]
         public IManualService ASimpleManualService { get; private set; }

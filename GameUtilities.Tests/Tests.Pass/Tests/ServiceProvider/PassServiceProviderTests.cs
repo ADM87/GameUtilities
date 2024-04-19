@@ -20,7 +20,7 @@ namespace GameUtilities.Tests
                 {
                     Assert.That(Services.Collection,                                                        Is.Not.Empty);
                     Assert.That(Services.Collection[typeof(ICollectedService)].IsSingleton,                 Is.False);
-                    Assert.That(Services.Collection[typeof(ICollectedServiceWidthDependency)].IsSingleton,  Is.False);
+                    Assert.That(Services.Collection[typeof(ICollectedServiceWithDependency)].IsSingleton,  Is.False);
                     // TODO - Check for service dependency injection on CollectedServiceWithDependency
                     Assert.That(Services.Collection[typeof(ICollectedSingletonService)].IsSingleton,        Is.True);
                 });
@@ -34,13 +34,13 @@ namespace GameUtilities.Tests
             {
                 Services.Collection.Clear();
                 Services.AddService<IManualService, ManualService>();
-                Services.AddService<IManualServiceWidthDependency, ManualServiceWithDependency>();
+                Services.AddService<IManualServiceWithDependency, ManualServiceWithDependency>();
                 Services.AddService<IManualSingletonService, ManualSingletonService>(isSingleton: true);
                 Assert.Multiple(() =>
                 {
                     Assert.That(Services.Collection,                                                    Is.Not.Empty);
                     Assert.That(Services.Collection[typeof(IManualService)].IsSingleton,                Is.False);
-                    Assert.That(Services.Collection[typeof(IManualServiceWidthDependency)].IsSingleton, Is.False);
+                    Assert.That(Services.Collection[typeof(IManualServiceWithDependency)].IsSingleton, Is.False);
                     // TODO - Check for service dependency injection on ManualServiceWithDependency
                     Assert.That(Services.Collection[typeof(IManualSingletonService)].IsSingleton,       Is.True);
                 });
