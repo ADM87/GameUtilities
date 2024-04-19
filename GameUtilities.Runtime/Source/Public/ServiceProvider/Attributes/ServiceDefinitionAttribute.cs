@@ -7,7 +7,7 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// </summary>
     /// <param name="identitiyType">Must be an interface type</param>
     /// <param name="isSingleton"></param>
-        [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class ServiceDefinitionAttribute(Type identitiyType, bool isSingleton = false) : Attribute
     {
         public Type IdentityType { get; private set; } = identitiyType;

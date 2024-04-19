@@ -6,8 +6,5 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// Represents an attribute that marks a property as a dependency on a service.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class ServiceDependencyAttribute : Attribute
-    {
-
-    }
+    public sealed class ServiceDependencyAttribute : Attribute {}
 }
