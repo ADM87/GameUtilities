@@ -2,21 +2,24 @@ using ADM87.GameUtilities.ServiceProvider;
 
 namespace GameUtilities.Tests
 {
-    public interface IPassCollectService {}
-    [ServiceDefinition(typeof(IPassCollectService))]
-    public class PassCollectService : IPassCollectService {}
+    public interface ISimpleCollectedService {}
+    [ServiceDefinition(typeof(ISimpleCollectedService))]
+    public class SimpleCollectedService : ISimpleCollectedService {}
 
-    public interface IPassCollectSingletonService {}
-    [ServiceDefinition(typeof(IPassCollectSingletonService), isSingleton: true)]
-    public class PassCollectSingletonService : IPassCollectSingletonService {}
+    public interface ICollectedSingletonService {}
+    [ServiceDefinition(typeof(ICollectedSingletonService), isSingleton: true)]
+    public class CollectedSingletonService : ICollectedSingletonService {}
 
-    public interface ISimplePassService {}
-    public class SimplePassService : ISimplePassService {}
+    public interface ISimpleManualService {}
+    public class SimpleManualService : ISimpleManualService {}
 
-    public interface IPassServiceWithDependency {}
-    public class PassServiceWithDependency : IPassServiceWithDependency
+    public interface IManualServiceWidthDependency
+    {
+        ISimpleManualService ASimpleManualService { get; }
+    }
+    public class ManualServiceWithDependency : IManualServiceWidthDependency
     {
         [ServiceDependency]
-        public ISimplePassService aSimplePassService { get; private set; }
+        public ISimpleManualService ASimpleManualService { get; private set; }
     }
 }
