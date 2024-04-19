@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameUtilities.Library.Runtime\GameUtilities.Library.Runtime.csproj" />
+    <ProjectReference Include="..\..\GameUtilities.Runtime\GameUtilities.Runtime.csproj" />
   </ItemGroup>
 
 </Project>
