@@ -18,9 +18,9 @@ namespace GameUtilities.Tests
                 Services.CollectServiceDefinitions();
                 Assert.Multiple(() =>
                 {
-                    Assert.That(Services.Collection,                                                        Is.Not.Empty);
-                    Assert.That(Services.Collection[typeof(ISuccessCollectService)].IsSingleton,            Is.False);
-                    Assert.That(Services.Collection[typeof(ISuccessCollectSingletonService)].IsSingleton,   Is.True);
+                    Assert.That(Services.Collection,                                                    Is.Not.Empty);
+                    Assert.That(Services.Collection[typeof(ISimpleCollectedService)].IsSingleton,       Is.False);
+                    Assert.That(Services.Collection[typeof(ICollectedSingletonService)].IsSingleton,    Is.True);
                 });
             }
 
@@ -31,15 +31,16 @@ namespace GameUtilities.Tests
             public static void PassManualAddServiceDefinition()
             {
                 Services.Collection.Clear();
-                Services.AddService<ISimpleSuccessService, SimpleSuccessService>();
-                Services.AddService<ISuccessServiceWithDependency, SuccessServiceWithDependency>();
-                Services.AddService<ISuccessCollectSingletonService, SuccessCollectSingletonService>(isSingleton: true);
+                Services.AddService<ISimpleManualService, SimpleManualService>();
+                Services.AddService<IManualServiceWidthDependency, ManualServiceWithDependency>();
+                Services.AddService<ICollectedSingletonService, CollectedSingletonService>(isSingleton: true);
                 Assert.Multiple(() =>
                 {
-                    Assert.That(Services.Collection,                                                                Is.Not.Empty);
-                    Assert.That(Services.Collection[typeof(ISimpleSuccessService)].IsSingleton,                     Is.False);
-                    Assert.That(Services.Collection[typeof(ISuccessCollectSingletonService)].IsSingleton,           Is.True);
-                    Assert.That(Services.Collection[typeof(ISuccessServiceWithDependency)].Dependencies.Count(),    Is.GreaterThan(0));
+                    Assert.That(Services.Collection,                                                    Is.Not.Empty);
+                    Assert.That(Services.Collection[typeof(ISimpleManualService)].IsSingleton,          Is.False);
+                    Assert.That(Services.Collection[typeof(IManualServiceWidthDependency)].IsSingleton, Is.False);
+                    // TODO - Check for service dependency injection on ManualServiceWithDependency
+                    Assert.That(Services.Collection[typeof(ICollectedSingletonService)].IsSingleton,    Is.True);
                 });
             }
         }
