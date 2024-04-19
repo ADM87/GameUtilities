@@ -28,7 +28,7 @@ namespace ADM87.GameUtilities.ServiceProvider
                     if (attribute == null)
                         continue;
 
-                    AddServiceInternal(attribute.IdentityType, type, attribute.IsSingleton);
+                    AddService(attribute.IdentityType, type, attribute.IsSingleton);
                 }
             }
         }
