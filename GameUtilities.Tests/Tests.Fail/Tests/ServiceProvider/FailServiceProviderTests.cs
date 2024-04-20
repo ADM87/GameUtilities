@@ -100,16 +100,19 @@ namespace GameUtilities.Tests
         {
             Services.Collection.Clear();
             Services.AddService<ICircularDependencyA, CircularDependencyA>();
-            Services.AddService<ICircularDependencyB, CircularDependencyB>();
-            Services.AddService<ICircularDependencyC, CircularDependencyC>();
-            Services.AddService<ICircularDependencyD, CircularDependencyD>();
-            Services.AddService<ICircularDependencyE, CircularDependencyE>();
             Assert.Multiple(() => {
-                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyA>());
-                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyB>());
-                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyC>());
-                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyD>());
-                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyE>());
+                Assert.Throws<CircularServiceDependencyException>(() => {
+                    Services.AddService<ICircularDependencyB, CircularDependencyB>();
+                });
+                Assert.Throws<CircularServiceDependencyException>(() => {
+                    Services.AddService<ICircularDependencyC, CircularDependencyC>();
+                });
+                Assert.Throws<CircularServiceDependencyException>(() => {
+                    Services.AddService<ICircularDependencyD, CircularDependencyD>();
+                });
+                Assert.Throws<CircularServiceDependencyException>(() => {
+                    Services.AddService<ICircularDependencyE, CircularDependencyE>();
+                });
             });
         }
     }
