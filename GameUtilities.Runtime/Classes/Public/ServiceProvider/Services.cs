@@ -79,6 +79,9 @@ namespace ADM87.GameUtilities.ServiceProvider
                 Dependencies    = GetServiceDependencies(implementationType),
                 IsSingleton     = isSingleton
             });
+
+            // Check for circular dependencies.
+            ResolveDependencies(identityType);
         }
 
         /// <summary>
@@ -106,40 +109,10 @@ namespace ADM87.GameUtilities.ServiceProvider
             if (definition.IsSingleton)
                 definition.Instance = instance;
 
-            Stack<Type> dependencyChain = new Stack<Type>();
-            dependencyChain.Push(definition.Implementation);
-
             foreach (PropertyInfo property in definition.Dependencies)
-            {
-                ResolveDependencies(GetServiceDefinition(property.PropertyType), dependencyChain);
                 property.SetValue(instance, Get(property.PropertyType));
-            }
 
             return instance;
-        }
-
-        /// <summary>
-        /// Resolves the dependencies for a given service definition.
-        /// </summary>
-        /// <param name="definition">The service definition.</param>
-        /// <param name="dependencyChain">The dependency chain to track circular dependencies.</param>
-        private static void ResolveDependencies(ServiceDefinition definition,
-                                                Stack<Type> dependencyChain)
-        {
-            // If the dependency chain already contains the service implementation, we have a circular dependency.
-            if (dependencyChain.Contains(definition.Implementation))
-                throw new CircularServiceDependencyException(dependencyChain);
-
-            // If the service is a singleton, we don't need to check its dependencies. Their instances are already created.
-            if (definition.IsSingleton)
-                return;
-
-            dependencyChain.Push(definition.Implementation);
-
-            foreach (PropertyInfo property in definition.Dependencies)
-                ResolveDependencies(GetServiceDefinition(property.PropertyType), dependencyChain);
-
-            dependencyChain.Pop();
         }
 
         /// <summary>
@@ -181,6 +154,42 @@ namespace ADM87.GameUtilities.ServiceProvider
                 dependencies.Add(property);
             }
             return dependencies;
+        }
+
+        private static void ResolveDependencies(Type identityType)
+        {
+            foreach (PropertyInfo property in Collection[identityType].Dependencies)
+            {
+                if (Collection.TryGetValue(property.PropertyType, out ServiceDefinition dependency))
+                    ResolveDependencies(dependency, [identityType]);
+            }
+        }
+
+        /// <summary>
+        /// Resolves the dependencies for a given service definition.
+        /// </summary>
+        /// <param name="definition">The service definition.</param>
+        /// <param name="dependencyChain">The dependency chain to track circular dependencies.</param>
+        private static void ResolveDependencies(ServiceDefinition definition,
+                                                List<Type> dependencyChain)
+        {
+            // If the dependency chain already contains the service implementation, we have a circular dependency.
+            if (dependencyChain.Contains(definition.Identity))
+                throw new CircularServiceDependencyException(dependencyChain);
+
+            // If the definition is a singleton, we don't need to check its dependencies. Their instances are already created.
+            if (definition.IsSingleton)
+                return;
+
+            dependencyChain.Add(definition.Identity);
+
+            foreach (PropertyInfo property in definition.Dependencies)
+            {
+                if (Collection.TryGetValue(property.PropertyType, out ServiceDefinition dependency))
+                    ResolveDependencies(dependency, dependencyChain);
+            }
+
+            dependencyChain.Remove(definition.Identity);
         }
     }
 }
