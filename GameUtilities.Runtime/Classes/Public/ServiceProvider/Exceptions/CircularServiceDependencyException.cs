@@ -1,10 +1,12 @@
 namespace ADM87.GameUtilities.ServiceProvider
 {
     /// <summary>
-    /// Represents an exception that is thrown when a circular dependency is detected in a service provider.
+    /// Represents an exception that is thrown when circular dependencies are detected in a service dependency chain.
     /// </summary>
-    /// <param name="implementationType">The type of the service implementation that has the circular dependency.</param>
-    /// <param name="dependencyType">The type of the service dependency that causes the circular dependency.</param>
-    public sealed class CircularServiceDependencyException(Type implementationType, Type dependencyType)
-        : Exception($"Detected circular dependency for {implementationType.Name} > {dependencyType.Name}") {}
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="CircularServiceDependencyException"/> class with the specified dependency chain.
+    /// </remarks>
+    /// <param name="dependencyChain">The list of types representing the dependency chain.</param>
+    public sealed class CircularServiceDependencyException(IEnumerable<Type> dependencyChain)
+        : Exception($"Detected circular dependencies: {string.Join(">", dependencyChain.Select(dep => dep.Name))}") {}
 }
