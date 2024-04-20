@@ -24,6 +24,38 @@ namespace GameUtilities.Tests
     public interface IDuplicateImplementationTypeB {}
     public class DuplicateImplementationType : IDuplicateImplementationTypeA, IDuplicateImplementationTypeB {}
 
+    // Fails because the implementation's service dependency is circular.
+    public interface ICircularDependencyA {}
+    public interface ICircularDependencyB {}
+    public interface ICircularDependencyC {}
+    public interface ICircularDependencyD {}
+    public interface ICircularDependencyE {}
+    public class CircularDependencyA : ICircularDependencyA
+    {
+        [ServiceDependency]
+        public ICircularDependencyB DependencyB { get; private set; }
+    }
+    public class CircularDependencyB : ICircularDependencyB
+    {
+        [ServiceDependency]
+        public ICircularDependencyA DependencyA { get; private set; }
+    }
+    public class CircularDependencyC : ICircularDependencyC
+    {
+        [ServiceDependency]
+        public ICircularDependencyA DependencyA { get; private set; }
+    }
+    public class CircularDependencyD : ICircularDependencyD
+    {
+        [ServiceDependency]
+        public ICircularDependencyC DependencyC { get; private set; }
+    }
+    public class CircularDependencyE : ICircularDependencyE
+    {
+        [ServiceDependency]
+        public ICircularDependencyE DependencyD { get; private set; }
+    }
+
     // Fails because the implementation's service dependency is missing a private setter.
     public interface IMissingPrivateDependencySetter {}
     public class MissingPrivateDependencySetter : IMissingPrivateDependencySetter

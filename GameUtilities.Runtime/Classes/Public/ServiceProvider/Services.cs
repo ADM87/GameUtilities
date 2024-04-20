@@ -89,7 +89,6 @@ namespace ADM87.GameUtilities.ServiceProvider
         public static T Get<T>()
             => (T)Get(typeof(T));
 
-
         /// <summary>
         /// Retrieves an instance of the specified type from the service provider.
         /// </summary>
@@ -127,8 +126,8 @@ namespace ADM87.GameUtilities.ServiceProvider
         private static void ResolveDependencies(ServiceDefinition definition,
                                                 Stack<Type> dependencyChain)
         {
-            // If the dependency chain already contains the service identity, we have a circular dependency.
-            if (dependencyChain.Contains(definition.Identity))
+            // If the dependency chain already contains the service implementation, we have a circular dependency.
+            if (dependencyChain.Contains(definition.Implementation))
                 throw new CircularServiceDependencyException(dependencyChain);
 
             // If the service is a singleton, we don't need to check its dependencies. Their instances are already created.

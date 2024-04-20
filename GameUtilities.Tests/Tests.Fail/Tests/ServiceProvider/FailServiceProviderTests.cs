@@ -81,5 +81,36 @@ namespace GameUtilities.Tests
                 Services.AddService<IInvalidServiceDependencyType, InvalidServiceDependencyType>();
             });
         }
+
+        /// <summary>
+        /// Tests the scenario where a service is not found in the service collection.
+        /// </summary>
+        [Test]
+        public static void FailServiceNotFound()
+        {
+            Services.Collection.Clear();
+            Assert.Throws<ServiceNotFoundException>(() => Services.Get<ITestService>());
+        }
+
+        /// <summary>
+        /// Tests the scenario where there is a circular dependency between services.
+        /// </summary>
+        [Test]
+        public static void FailCircularDependency()
+        {
+            Services.Collection.Clear();
+            Services.AddService<ICircularDependencyA, CircularDependencyA>();
+            Services.AddService<ICircularDependencyB, CircularDependencyB>();
+            Services.AddService<ICircularDependencyC, CircularDependencyC>();
+            Services.AddService<ICircularDependencyD, CircularDependencyD>();
+            Services.AddService<ICircularDependencyE, CircularDependencyE>();
+            Assert.Multiple(() => {
+                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyA>());
+                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyB>());
+                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyC>());
+                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyD>());
+                Assert.Throws<CircularServiceDependencyException>(() => Services.Get<ICircularDependencyE>());
+            });
+        }
     }
 }
