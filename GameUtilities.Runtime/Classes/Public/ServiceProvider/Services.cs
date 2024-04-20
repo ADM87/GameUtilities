@@ -4,11 +4,12 @@ namespace ADM87.GameUtilities.ServiceProvider
 {
     using ServiceCollection = Dictionary<Type, ServiceDefinition>;
 
+    /// <summary>
+    /// Provides a collection of services and methods for managing and retrieving them.
+    /// </summary>
     public static class Services
     {
-        private static readonly ServiceCollection k_serviceCollection = new ServiceCollection();
-
-        internal static ServiceCollection Collection => k_serviceCollection;
+        internal static ServiceCollection Collection { get; } = [];
 
         /// <summary>
         /// Collects service definitions from all assemblies in the current application domain.
@@ -63,21 +64,93 @@ namespace ADM87.GameUtilities.ServiceProvider
             if (!identityType.IsAssignableFrom(implementationType))
                 throw new InvalidServiceImplementationException(identityType, implementationType);
 
-            if (k_serviceCollection.ContainsKey(identityType))
+            if (Collection.ContainsKey(identityType))
                 throw new DuplicateServiceIdentityException(identityType);
 
-            foreach (var kvp in k_serviceCollection)
+            foreach (var kvp in Collection)
             {
                 if (kvp.Value.Implementation.Equals(implementationType))
                     throw new DuplicateServiceImplementationException(identityType, implementationType);
             }
 
-            k_serviceCollection.Add(identityType, new ServiceDefinition {
+            Collection.Add(identityType, new ServiceDefinition {
                 Identity        = identityType,
                 Implementation  = implementationType,
                 Dependencies    = GetServiceDependencies(implementationType),
                 IsSingleton     = isSingleton
             });
+        }
+
+        /// <summary>
+        /// Gets an instance of the specified type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance to retrieve.</typeparam>
+        /// <returns>An instance of the specified type <typeparamref name="T"/>.</returns>
+        public static T Get<T>()
+            => (T)Get(typeof(T));
+
+
+        /// <summary>
+        /// Retrieves an instance of the specified type from the service provider.
+        /// </summary>
+        /// <param name="type">The type of the instance to retrieve.</param>
+        /// <returns>An instance of the specified type.</returns>
+        public static object Get(Type type)
+        {
+            ServiceDefinition definition = GetServiceDefinition(type);
+
+            if (definition.Instance != null)
+                return definition.Instance;
+
+            object instance = Activator.CreateInstance(definition.Implementation);
+
+            if (definition.IsSingleton)
+                definition.Instance = instance;
+
+            Stack<Type> dependencyChain = new Stack<Type>();
+            dependencyChain.Push(definition.Implementation);
+
+            foreach (PropertyInfo property in definition.Dependencies)
+            {
+                ResolveDependencies(GetServiceDefinition(property.PropertyType), dependencyChain);
+                property.SetValue(instance, Get(property.PropertyType));
+            }
+
+            return instance;
+        }
+
+        /// <summary>
+        /// Resolves the dependencies for a given service definition.
+        /// </summary>
+        /// <param name="definition">The service definition.</param>
+        /// <param name="dependencyChain">The dependency chain to track circular dependencies.</param>
+        private static void ResolveDependencies(ServiceDefinition definition, Stack<Type> dependencyChain)
+        {
+            // If the dependency chain already contains the service identity, we have a circular dependency.
+            if (dependencyChain.Contains(definition.Identity))
+                throw new CircularServiceDependencyException(dependencyChain);
+
+            // If the service is a singleton, we don't need to check its dependencies. Their instances are already created.
+            if (definition.IsSingleton)
+                return;
+
+            dependencyChain.Push(definition.Implementation);
+
+            foreach (PropertyInfo property in definition.Dependencies)
+                ResolveDependencies(GetServiceDefinition(property.PropertyType), dependencyChain);
+
+            dependencyChain.Pop();
+        }
+
+        /// <summary>
+        /// Returns a definition for a service.
+        /// </summary>
+        private static ServiceDefinition GetServiceDefinition(Type type)
+        {
+            if (Collection.TryGetValue(type, out ServiceDefinition definition))
+                throw new ServiceNotFoundException(type);
+
+            return definition;
         }
 
         /// <summary>
