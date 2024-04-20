@@ -124,7 +124,8 @@ namespace ADM87.GameUtilities.ServiceProvider
         /// </summary>
         /// <param name="definition">The service definition.</param>
         /// <param name="dependencyChain">The dependency chain to track circular dependencies.</param>
-        private static void ResolveDependencies(ServiceDefinition definition, Stack<Type> dependencyChain)
+        private static void ResolveDependencies(ServiceDefinition definition,
+                                                Stack<Type> dependencyChain)
         {
             // If the dependency chain already contains the service identity, we have a circular dependency.
             if (dependencyChain.Contains(definition.Identity))
@@ -147,7 +148,7 @@ namespace ADM87.GameUtilities.ServiceProvider
         /// </summary>
         private static ServiceDefinition GetServiceDefinition(Type type)
         {
-            if (Collection.TryGetValue(type, out ServiceDefinition definition))
+            if (!Collection.TryGetValue(type, out ServiceDefinition definition))
                 throw new ServiceNotFoundException(type);
 
             return definition;
@@ -166,7 +167,7 @@ namespace ADM87.GameUtilities.ServiceProvider
                                                                                   | BindingFlags.NonPublic
                                                                                   | BindingFlags.Public
                                                                                   | BindingFlags.DeclaredOnly);
-            List<PropertyInfo> dependencies = new List<PropertyInfo>();
+            List<PropertyInfo> dependencies = [];
             foreach (PropertyInfo property in properties)
             {
                 if (property.GetCustomAttribute<ServiceDependencyAttribute>() == null)

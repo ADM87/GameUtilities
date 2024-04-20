@@ -36,4 +36,14 @@ namespace GameUtilities.Tests
         [ServiceDependency]
         public IManualService ASimpleManualService { get; private set; }
     }
+
+    public interface IManualServiceWithSingletonDependency
+    {
+        IManualSingletonService ASingletonManualService { get; }
+    }
+    public class ManualServiceWithSingletonDependency : IManualServiceWithSingletonDependency
+    {
+        [ServiceDependency]
+        public IManualSingletonService ASingletonManualService { get; private set; }
+    }
 }
