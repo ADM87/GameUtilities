@@ -27,10 +27,9 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
+          git config user.token ${{ steps.generate-token.outputs.token }}
 
       - name: Create tag
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           chmod +x .stamp/scripts/stamp.sh
           .stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}
