@@ -44,9 +44,7 @@ jobs:
       - name: Copy Published Files
         run: cp ./publish/GameUtilities.Runtime.dll ./deployment-repo/Plugins/
 
-      - name: Push Deployment
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Commit and Push Changes
         run: |
           cd ./deployment-repo
           git add -A
