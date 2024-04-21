@@ -36,8 +36,9 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.email "<>"
-          git config --global user.name "github-actions[bot]"
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git config user.token ${{ steps.generate-token.outputs.token }}
 
       - name: Clone Deployment Repository
         run: git clone $DEPLOYMENT_REPO ./deployment-repo
@@ -46,8 +47,6 @@ jobs:
         run: cp ./publish/GameUtilities.Runtime.dll ./deployment-repo/Plugins/
 
       - name: Commit and Push Changes
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd ./deployment-repo
           git add -A
