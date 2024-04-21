@@ -12,6 +12,13 @@ jobs:
       DEPLOYMENT_REPO: https://github.com/ADM87/GameUtilities.Unity.git
 
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+          
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -38,6 +45,8 @@ jobs:
         run: cp ./publish/GameUtilities.Runtime.dll ./deployment-repo/Plugins/
 
       - name: Push Deployment
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd ./deployment-repo
           git add -A
