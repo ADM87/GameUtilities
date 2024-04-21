@@ -1,0 +1,35 @@
+name: Unit Test Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Build Tests.Pass
+        run: dotnet build ./Tests.Pass/Tests.Pass.csproj
+
+      - name: Build Tests.Fail
+        run: dotnet build ./Tests.Fail/Tests.Fail.csproj
+
+      - name: Run Tests.Pass
+        run: dotnet test ./Tests.Pass/Tests.Pass.csproj
+
+      - name: Run Tests.Fail
+        run: dotnet test ./Tests.Fail/Tests.Fail.csproj
