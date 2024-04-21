@@ -23,13 +23,10 @@ jobs:
           dotnet-version: '5.0.x'
 
       - name: Build Tests.Pass
-        run: dotnet build ./Tests.Pass/Tests.Pass.csproj
+        run: dotnet build ./GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj
 
       - name: Build Tests.Fail
-        run: dotnet build ./Tests.Fail/Tests.Fail.csproj
+        run: dotnet build ./GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj
 
-      - name: Run Tests.Pass
-        run: dotnet test ./Tests.Pass/Tests.Pass.csproj
-
-      - name: Run Tests.Fail
-        run: dotnet test ./Tests.Fail/Tests.Fail.csproj
+      - name: Run Tests
+        run: dotnet test
