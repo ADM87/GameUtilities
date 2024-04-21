@@ -8,7 +8,9 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// <remarks>
     /// Initializes a new instance of the <see cref="ServiceNotFoundException"/> class.
     /// </remarks>
-    [Serializable]
-    public sealed class ServiceNotFoundException(Type identityType)
-        : Exception($"The service with the identity type '{identityType.Name}' was not found in the service collection.") {}
+    public sealed class ServiceNotFoundException : Exception
+    {
+        public ServiceNotFoundException(Type identityType)
+            : base($"The service with the identity type '{identityType.Name}' was not found in the service collection.") {}
+    }
 }

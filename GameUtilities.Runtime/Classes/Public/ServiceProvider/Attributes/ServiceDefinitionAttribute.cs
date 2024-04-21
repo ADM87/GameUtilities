@@ -8,9 +8,15 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// <param name="identitiyType">Must be an interface type</param>
     /// <param name="isSingleton"></param>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ServiceDefinitionAttribute(Type identitiyType, bool isSingleton = false) : Attribute
+    public sealed class ServiceDefinitionAttribute : Attribute
     {
-        public Type IdentityType { get; private set; } = identitiyType;
-        public bool IsSingleton { get; private set; } = isSingleton;
+        public Type IdentityType { get; private set; }
+        public bool IsSingleton { get; private set; }
+
+        public ServiceDefinitionAttribute(Type identitiyType, bool isSingleton = false)
+        {
+            IdentityType = identitiyType;
+            IsSingleton = isSingleton;
+        }
     }
 }
