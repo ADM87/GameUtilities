@@ -1,12 +1,6 @@
 name: Publish and Deploy GameUtilities.Runtime
 
 on:
-  workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
   push:
     tags:
       - '*'
@@ -31,7 +25,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Publish
         run: dotnet publish -c Release --output ./publish
