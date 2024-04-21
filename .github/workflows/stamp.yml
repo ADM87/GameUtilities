@@ -1,0 +1,28 @@
+name: Merge Request Workflow
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  tag_version:
+    if: ${{ github.event.pull_request.merged }} && ${{ github.base_ref == 'main' }}
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      - name: Create tag
+        run: |
+          chmod +x .stamp/scripts/stamp.sh
+          .stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}
