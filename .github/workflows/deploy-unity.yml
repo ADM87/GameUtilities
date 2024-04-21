@@ -1,0 +1,45 @@
+name: Publish and Deploy GameUtilities.Runtime
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-deploy-unity:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOYMENT_REPO: https://github.com/ADM87/GameUtilities.Unity.git
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Publish
+        run: dotnet publish -c Release --output ./publish
+
+      - name: Test
+        run: dotnet test
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "<>"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Clone Deployment Repository
+        run: git clone $DEPLOYMENT_REPO ./deployment-repo
+
+      - name: Copy Published Files
+        run: cp ./publish/GameUtilities.Runtime.dll ./deployment-repo/Plugins/
+
+      - name: Push Deployment
+        run: |
+          cd ./deployment-repo
+          git add -A
+          git commit -m "GameUtilities.Runtime - ${{ github.ref }}"
+          git push
