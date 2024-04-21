@@ -1,6 +1,7 @@
 name: Stamp Versioning
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - closed
