@@ -11,10 +11,15 @@ jobs:
     if: ${{ github.event.pull_request.merged }} && ${{ github.base_ref == 'main' }}
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -24,6 +29,8 @@ jobs:
           git config user.email "<>"
 
       - name: Create tag
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           chmod +x .stamp/scripts/stamp.sh
           .stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}
