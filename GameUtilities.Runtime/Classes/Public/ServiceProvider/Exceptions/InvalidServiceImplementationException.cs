@@ -7,6 +7,9 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// </summary>
     /// <param name="identityType">The type of the required identity.</param>
     /// <param name="implementationType">The type of the service implementation.</param>
-    public sealed class InvalidServiceImplementationException(Type identityType, Type implementationType)
-        : Exception($"Service implementation {implementationType.Name} must implement {identityType.Name}") {}
+    public sealed class InvalidServiceImplementationException : Exception
+    {
+        public InvalidServiceImplementationException(Type identityType, Type implementationType)
+            : base($"Service implementation {implementationType.Name} must implement {identityType.Name}") {}
+    }
 }

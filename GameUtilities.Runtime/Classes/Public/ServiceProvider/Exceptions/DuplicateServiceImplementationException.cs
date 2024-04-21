@@ -7,6 +7,9 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// </summary>
     /// <param name="identityType">The type of the service identity.</param>
     /// <param name="implementationType">The type of the duplicate service implementation.</param>
-    public sealed class DuplicateServiceImplementationException(Type identityType, Type implementationType)
-        : Exception($"Detected duplicate service implementations {implementationType.Name} for identity {identityType.Name}") {}
+    public sealed class DuplicateServiceImplementationException : Exception
+    {
+        public DuplicateServiceImplementationException(Type identityType, Type implementationType)
+            : base($"Detected duplicate service implementations {implementationType.Name} for identity {identityType.Name}") {}
+    }
 }
