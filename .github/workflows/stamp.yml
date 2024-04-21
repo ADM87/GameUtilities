@@ -21,16 +21,15 @@ jobs:
           private-key: ${{ secrets.APP_KEY }}
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
+          git config user.token ${{ steps.generate-token.outputs.token }}
 
       - name: Create tag
-        env:
-          github_token: ${{ steps.generate-token.outputs.token }}
         run: |
           chmod +x .stamp/scripts/stamp.sh
           .stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}
