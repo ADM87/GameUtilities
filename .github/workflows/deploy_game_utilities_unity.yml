@@ -37,6 +37,13 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           path: ${{ env.RUNTIME_ROOT }}
 
+      - name: Fetch Version
+        run: |
+          cd ${{ env.RUNTIME_ROOT }}
+          git fetch --tags
+          echo "VERSION_TAG=$(echo $(git describe --tags --match='v[0-9]*' --abbrev=0))" >> $GITHUB_ENV
+          cd ..
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
@@ -63,10 +70,15 @@ jobs:
         run: cp -r ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
 
       - name: Commit & Push
+        if: ${{ env.VERSION_TAG }}
+        env:
+          BRANCH_NAME: 'update-runtime-${{ env.VERSION_TAG }}'
         run: |
           cd ${{ env.UNITY_ROOT }}
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
+          git checkout -b $BRANCH_NAME
           git add .
-          git commit -m "Update GameUtilities.Runtime"
-          git push
+          git commit -m "Update GameUtilities.Runtime to ${{ env.VERSION_TAG }}"
+          git push set-upstream origin $BRANCH_NAME
+          cd ..
