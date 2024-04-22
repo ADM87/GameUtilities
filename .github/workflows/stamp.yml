@@ -1,4 +1,4 @@
-name: Version Tagging
+name: Version Tag
 
 on:
   pull_request:
