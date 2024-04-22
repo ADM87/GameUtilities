@@ -15,9 +15,9 @@ jobs:
       - name: Get Branch Prefix
         id: branch-prefix
         run: |
-            BRANCH_PREFIX=$(echo ${GITHUB_REF#refs/heads/})
-            if [[ $BRANCH_PREFIX =~ ^(major|minor|patch)/ ]]; then echo "BRANCH_PREFIX=${BASH_REMATCH[1]}" >> $GITHUB_ENV; fi
-            echo "BRANCH_PREFIX=${BRANCH_PREFIX}"
+          BRANCH_PREFIX=$(echo ${GITHUB_REF#refs/heads/})
+          if [[ $BRANCH_PREFIX =~ ^(major|minor|patch)/ ]]; then echo "BRANCH_PREFIX=${BASH_REMATCH[1]}" >> $GITHUB_ENV; fi
+          echo "BRANCH_PREFIX=${BRANCH_PREFIX}"
 
       # - name: Generate a token
       #   id: app-token
