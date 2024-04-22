@@ -36,7 +36,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
-          fetch-tags: true
 
       - name: Create Tag
         if: ${{ steps.version-type.outputs.VERSION_TYPE != 'ignore' }}
