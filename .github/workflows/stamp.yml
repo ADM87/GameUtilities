@@ -31,21 +31,24 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_KEY }}
 
-      # - name: Checkout code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     token: ${{ steps.app-token.outputs.token }}
+      - name: Checkout code
+        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
-      # - name: Create tag
-      #   run: |
-      #     chmod +x ./.github/scripts/create_tag.sh
-      #     echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ env.BRANCH_PREFIX }}))" >> $GITHUB_ENV
+      - name: Create tag
+        id: create-tag
+        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+        run: |
+          chmod +x ./.github/scripts/create_tag.sh
+          echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ github.event.pull_request.head.ref }}))" >> $GITHUB_OUTPUT
 
-      # - name: Push tag
-      #   if: env.VERSION_TAG
-      #   run: |
-      #     echo "VERSION_TAG=${{ env.VERSION_TAG }}"
-      #     git config user.name "GitHub Actions Bot"
-      #     git config user.email "<>"
-      #     git tag ${{ env.VERSION_TAG }} -m "Version ${{ env.VERSION_TAG }}"
-      #     git push origin ${{ env.VERSION_TAG }}
+      - name: Push tag
+        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+        run: |
+          echo "VERSION_TAG=${{ steps.create_tag.outputs.VERSION_TAG }}"
+# git config user.name "GitHub Actions Bot"
+# git config user.email "<>"
+# git tag ${{ env.VERSION_TAG }} -m "Version ${{ env.VERSION_TAG }}"
+# git push origin ${{ env.VERSION_TAG }}
