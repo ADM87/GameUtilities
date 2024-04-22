@@ -29,7 +29,7 @@ jobs:
         id: create_tag
         run: |
             chmod +x .stamp/scripts/stamp.sh
-            VERSION_TAG=$(echo ./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}) >> $GITHUB_OUTPUT
+            VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }})) >> $GITHUB_OUTPUT
             echo "VERSION_TAG=$VERSION_TAG"
 
       - name: Push tag
