@@ -24,13 +24,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.head_ref }}
 
       - name: Create tag
         id: create_tag
         run: |
             chmod +x .stamp/scripts/stamp.sh
-            VERSION_TAG=$(echo ./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}) >> $GITHUB_OUTPUT
+            VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }})) >> $GITHUB_OUTPUT
             echo "VERSION_TAG=$VERSION_TAG"
 
       - name: Push tag
