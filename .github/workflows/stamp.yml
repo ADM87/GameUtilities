@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.head_ref }}
 
       - name: Create tag
         id: create_tag
