@@ -1,4 +1,4 @@
-name: Stamp Versioning
+name: Version Tagging
 
 on:
   pull_request:
