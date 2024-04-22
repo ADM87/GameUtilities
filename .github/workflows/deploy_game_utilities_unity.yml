@@ -11,17 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUNTIME_ROOT: './Runtime'
-      RUNTIME_PROJ: './GameUtilities.Runtime/GameUtilities.Runtime.csproj'
+      RUNTIME_PROJ: 'GameUtilities.Runtime/GameUtilities.Runtime.csproj'
       RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
       UNITY_ROOT: './Unity'
-      UNITY_REPO: 'https://github.com/ADM87/GameUtilities.Unity.git'
+      UNITY_REPO: 'ADM87/GameUtilities.Unity'
       TEST_ROOT: './Tests'
-      TEST_PASS: './GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
+      TEST_PASS: 'GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
       TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
-      TEST_FAIL: './GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
+      TEST_FAIL: 'GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
       TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
       PUBLISH_PATH: './Publish'
-      DEPLOY_PATH: './Plugins/GameUtilitiesRuntime'
+      DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime'
 
     steps:
       - name: Checkout
