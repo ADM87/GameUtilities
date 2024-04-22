@@ -21,7 +21,6 @@ jobs:
               PREFIX=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oE '^(major|minor|patch)/') >> $GITHUB_ENV
             fi
             echo "prefix=${{ env.PREFIX }}"
-
       # - name: Generate a token
       #   id: app-token
       #   uses: actions/create-github-app-token@v1
