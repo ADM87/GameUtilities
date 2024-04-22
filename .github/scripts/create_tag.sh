@@ -29,10 +29,10 @@ if [[ "$PREFIX" == major* ]]; then
     major_version=$((major_version + 1))
     minor_version=0
     patch_version=0
-elif [[ "$BRANCH_NAME" == minor* ]]; then
+elif [[ "$PREFIX" == minor* ]]; then
     minor_version=$((minor_version + 1))
     patch_version=0
-elif [[ "$BRANCH_NAME" == patch* ]]; then
+elif [[ "$PREFIX" == patch* ]]; then
     patch_version=$((patch_version + 1))
 fi
 
