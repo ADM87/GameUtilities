@@ -76,8 +76,8 @@ jobs:
           cd ${{ env.UNITY_ROOT }}
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git checkout -b $BRANCH_NAME
+          git checkout -b ${{ env.BRANCH_NAME }}
           git add .
           git commit -m "Update GameUtilities.Runtime to ${{ env.VERSION_TAG }}"
-          git push set-upstream origin $BRANCH_NAME
+          git push --set-upstream origin ${{ env.BRANCH_NAME }}
           cd ..
