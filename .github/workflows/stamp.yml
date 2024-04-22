@@ -25,6 +25,7 @@ jobs:
 
       - name: Generate a token
         id: app-token
+        if: ${{ steps.check-versioning.outputs.VERSION_TYPE }} != 'unknown'
         run: |
           echo VERSIONING=${{ steps.check-versioning.outputs.VERSION_TYPE }}
         # if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
