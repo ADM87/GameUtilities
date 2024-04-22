@@ -14,23 +14,30 @@ jobs:
 
     steps:
       - name: Generate a token
-        id: generate-token
+        id: app-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_KEY }}
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.head_ref }}
 
-      - name: setup git config
+      - name: Create tag
+        id: create_tag
+        run: |
+            chmod +x .stamp/scripts/stamp.sh
+            VERSION_TAG=$(echo ./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}) >> $GITHUB_OUTPUT
+            echo "VERSION_TAG=$VERSION_TAG"
+
+      - name: Push tag
+        env:
+          VERSION_TAG: ${{ steps.create_tag.outputs.VERSION_TAG }}
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-
-      - name: Create tag
-        env:
-          github_token: ${{ steps.generate-token.outputs.token }}
-        run: |
-          chmod +x .stamp/scripts/stamp.sh
-          .stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}
+          git tag $VERSION_TAG -m "Version $VERSION_TAG"
+          git push origin $VERSION_TAG
