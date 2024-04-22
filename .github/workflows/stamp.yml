@@ -17,9 +17,10 @@ jobs:
       - name: Get Branch Prefix
         id: branch-prefix
         run: |
-          PREFIX=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oE '^(major|minor|patch)/')
-          echo "Prefix: $PREFIX"
-
+            if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/ ]]; then
+              PREFIX=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oE '^(major|minor|patch)/') >> $GITHUB_ENV
+            fi
+            echo "prefix=${{ env.PREFIX }}"
 
       # - name: Generate a token
       #   id: app-token
