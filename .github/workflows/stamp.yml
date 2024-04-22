@@ -29,12 +29,12 @@ jobs:
         id: create_tag
         run: |
             chmod +x .stamp/scripts/stamp.sh
-            VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }})) >> $GITHUB_OUTPUT
+            VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }})) >> $GITHUB_ENV
             echo "VERSION_TAG=$VERSION_TAG"
 
       - name: Push tag
         env:
-          VERSION_TAG: ${{ steps.create_tag.outputs.VERSION_TAG }}
+            VERSION_TAG: ${{ steps.create_tag.outputs.VERSION_TAG }}
         run: |
           echo "VERSION_TAG=$VERSION_TAG"
           git config user.name "GitHub Actions Bot"
