@@ -2,6 +2,8 @@ name: Stamp Versioning
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - closed
 
@@ -15,7 +17,7 @@ jobs:
       - name: Get Branch Prefix
         id: branch-prefix
         run: |
-          if [[ ${{ github.event.pull_request.head.ref }} =~ ^(major|minor|patch)/ ]]; then
+          if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/ ]]; then
             echo "BRANCH_PREFIX=${BASH_REMATCH[1]}" >> $GITHUB_ENV;
           fi
           echo "BRANCH_PREFIX=${{ env.BRANCH_PREFIX }}"
