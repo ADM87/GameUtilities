@@ -11,6 +11,8 @@ jobs:
     if: ${{ github.event.pull_request.merged }} && ${{ github.base_ref == 'main' }}
 
     runs-on: ubuntu-latest
+    env:
+      VERSION_TAG: ""
 
     steps:
       - name: Generate a token
@@ -26,15 +28,12 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Create tag
-        id: create_tag
         run: |
             chmod +x .stamp/scripts/stamp.sh
-            VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }})) >> $GITHUB_ENV
+            $VERSION_TAG=$(echo $(./.stamp/scripts/stamp.sh ${{ github.event.pull_request.head.ref }}))
             echo "VERSION_TAG=$VERSION_TAG"
 
       - name: Push tag
-        env:
-            VERSION_TAG: ${{ steps.create_tag.outputs.VERSION_TAG }}
         run: |
           echo "VERSION_TAG=$VERSION_TAG"
           git config user.name "GitHub Actions Bot"
