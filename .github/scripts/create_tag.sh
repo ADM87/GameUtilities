@@ -1,17 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-BRANCH_NAME=$1
+PREFIX=$1
 
 # Validate input parameter
-if [[ -z "$BRANCH_NAME" ]]; then
-    echo "Branch name is required." >&2
+if [[ -z "$PREFIX" ]]; then
+    echo "Branch prefix is required." >&2
     exit 1
 fi
 
 # Validate branch name pattern
-if [[ ! "$BRANCH_NAME" =~ ^(major|minor|patch)/.*$ ]]; then
-    echo "Invalid branch name format. Expected format: major/, minor/, or patch/ prefix." >&2
+if [[ ! "$PREFIX" =~ ^(major|minor|patch)/.*$ ]]; then
+    echo "Invalid branch prefix format. Expected format: major/, minor/, or patch/ prefix." >&2
     exit 1
 fi
 
@@ -40,10 +40,6 @@ elif [[ "$BRANCH_NAME" == minor/* ]]; then
     patch_version=0
 elif [[ "$BRANCH_NAME" == patch/* ]]; then
     patch_version=$((patch_version + 1))
-else
-    echo "Current branch does not have major/, minor/, or patch/ prefix" >&2
-    echo "Version will not be updated, and no tag will be created." >&2
-    exit 1
 fi
 
 # Create a new version tag
