@@ -17,7 +17,8 @@ jobs:
       - name: Get Branch Prefix
         id: branch-prefix
         run: |
-            if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/ ]]; then
+            PREFIX=${{ github.event.pull_request.head.ref }}
+            if [[ "$PREFIX" =~ ^(major|minor|patch)/ ]]; then
               PREFIX=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oE '^(major|minor|patch)/') >> $GITHUB_ENV
             fi
 
