@@ -17,37 +17,39 @@ jobs:
       - name: Is versioning required
         id: check-versioning
         run: |
-          if [[ ${{ github.event.pull_request.head.ref }} =~ ^(major|minor|patch)/.*$ ]]; then
-            echo "VERSIONING=true" >> $GITHUB_OUTPUT
-          else
-            echo "VERSIONING=false" >> $GITHUB_OUTPUT
-          fi
+            if [[ "VERSION_TYPE=$(echo $(${{ github.event.pull_request.head.ref }} =~ ^(major|minor|patch)/.*$))" ]]; then
+              echo "VERSION_TYPE=$VERSION_TYPE" >> $GITHUB_OUTPUT
+            else
+              echo "VERSION_TYPE=unknown" >> $GITHUB_OUTPUT
+            fi
 
       - name: Generate a token
-        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
         id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.APP_KEY }}
-
-      - name: Checkout code
-        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
-        uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Create tag
-        id: create-tag
-        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
         run: |
-          chmod +x ./.github/scripts/create_tag.sh
-          echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ github.event.pull_request.head.ref }}))" >> $GITHUB_OUTPUT
+          echo VERSIONING=${{ steps.check-versioning.outputs.VERSION_TYPE }}
+        # if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+        # uses: actions/create-github-app-token@v1
+        # with:
+        #   app-id: ${{ vars.APP_ID }}
+        #   private-key: ${{ secrets.APP_KEY }}
 
-      - name: Push tag
-        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
-        run: |
-          echo "VERSION_TAG=${{ steps.create_tag.outputs.VERSION_TAG }}"
+      # - name: Checkout code
+      #   if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+      #   uses: actions/checkout@v4
+      #   with:
+      #     token: ${{ steps.app-token.outputs.token }}
+
+      # - name: Create tag
+      #   id: create-tag
+      #   if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+      #   run: |
+      #     chmod +x ./.github/scripts/create_tag.sh
+      #     echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ github.event.pull_request.head.ref }}))" >> $GITHUB_OUTPUT
+
+      # - name: Push tag
+      #   if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
+      #   run: |
+      #     echo "VERSION_TAG=${{ steps.create_tag.outputs.VERSION_TAG }}"
 # git config user.name "GitHub Actions Bot"
 # git config user.email "<>"
 # git tag ${{ env.VERSION_TAG }} -m "Version ${{ env.VERSION_TAG }}"
