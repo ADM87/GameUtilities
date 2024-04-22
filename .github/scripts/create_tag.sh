@@ -9,14 +9,8 @@ if [[ -z "$PREFIX" ]]; then
     exit 1
 fi
 
-# Fetch tags from remote repository
-if ! git fetch --tags; then
-    echo "Failed to fetch tags from remote repository." >&2
-    exit 1
-fi
-
 # Get the last tag that matches the versioning pattern major.minor.patch
-last_tag=$(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1)
+last_tag=$(git describe --tags --match="v[0-9]*.[0-9]*.[0-9]*" --abbrev=0 HEAD)
 
 # Default to v0.0.0 if no previous tags exist
 last_tag=${last_tag:-"v0.0.0"}
