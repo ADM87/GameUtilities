@@ -14,24 +14,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Parse Branch Name
-        id: parse_branch
+      - name: Check if versioning is needed
+        id: check-mmp-versioning
         run: |
-          branch_name=$(echo "${{ github.event.pull_request.head.ref }}" | awk -F'/' '{print $2}')
-          if [[ $branch_name =~ ^(major|minor|patch)$ ]]; then
-            echo "VERSION_TYPE=$branch_name" >> $GITHUB_ENV
+          if [[ ${{ github.event.pull_request.head.ref }} =~ ^(major/|minor/|patch/) ]]; then
+            echo "VERSIONING=true" >> $GITHUB_ENV
+          else
+            echo "VERSIONING=false" >> $GITHUB_ENV
           fi
 
-      - name: Print Environment Variable
-        if: env.VERSION_TYPE
-        run: echo $VERSION_TYPE
-
-      # - name: Generate a token
-      #   id: app-token
-      #   uses: actions/create-github-app-token@v1
-      #   with:
-      #     app-id: ${{ vars.APP_ID }}
-      #     private-key: ${{ secrets.APP_KEY }}
+      - name: Generate a token
+        if: steps.check-mmp-versioning.outputs.VERSIONING == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
 
       # - name: Checkout code
       #   uses: actions/checkout@v4
