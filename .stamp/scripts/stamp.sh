@@ -54,17 +54,16 @@ else
 fi
 
 # Create a new version tag
-new_tag="v${major_version}.${minor_version}.${patch_version}"
-echo "New version: $new_tag"
+echo "v${major_version}.${minor_version}.${patch_version}"
 
-if ! git tag -a "$new_tag" -m "Version $new_tag" >&2; then
-    echo "Failed to create tag." >&2
-    exit 1
-fi
+# if ! git tag -a "$new_tag" -m "Version $new_tag" >&2; then
+#     echo "Failed to create tag." >&2
+#     exit 1
+# fi
 
-if ! git push origin "$new_tag" >&2; then
-    echo "Failed to push tag." >&2
-    exit 1
-fi
+# if ! git push origin "$new_tag" >&2; then
+#     echo "Failed to push tag." >&2
+#     exit 1
+# fi
 
-echo "Tag created and pushed successfully."
+# echo "Tag created and pushed successfully."
