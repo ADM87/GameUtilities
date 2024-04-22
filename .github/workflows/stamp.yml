@@ -27,7 +27,7 @@ jobs:
 
       - name: Create tag
         env:
-          BRANCH_PREFIX: ${{ github.event.pull_request.head.ref }}=~ ^(major|minor|patch)/.*$
+          BRANCH_PREFIX: echo "(${{ github.event.pull_request.head.ref }}=~ ^(major|minor|patch)/.*$"
         if: env.BRANCH_PREFIX
         run: |
           echo "BRANCH_PREFIX=${BRANCH_PREFIX}"
