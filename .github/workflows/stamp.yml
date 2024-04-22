@@ -14,16 +14,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get Branch Prefix
-        id: branch-prefix
+      - name: Parse Branch Name
+        id: parse_branch
         run: |
-            PREFIX=${{ github.event.pull_request.head.ref }}
-            if [[ "$PREFIX" =~ ^(major|minor|patch)/ ]]; then
-              PREFIX=$(echo "${{ github.event.pull_request.head.ref }}" | grep -oE '^(major|minor|patch)/') >> $GITHUB_ENV
-            fi
+          branch_name=$(echo "${{ github.event.pull_request.base.ref }}" | awk -F'/' '{print $2}')
+          if [[ $branch_name =~ ^(major|minor|patch)$ ]]; then
+            echo "VERSION_TYPE=$branch_name" >> $GITHUB_ENV
+          fi
 
-      - name: Check Branch Prefix
-        run: echo "prefix=${{ env.PREFIX }}"
+      - name: Print Environment Variable
+        if: env.VERSION_TYPE
+        run: echo $VERSION_TYPE
+        
       # - name: Generate a token
       #   id: app-token
       #   uses: actions/create-github-app-token@v1
