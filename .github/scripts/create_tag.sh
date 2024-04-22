@@ -9,6 +9,7 @@ if [[ -z "$PREFIX" ]]; then
     exit 1
 fi
 
+# TODO - This can probably be better.
 # Fetch tags from remote repository
 git fetch --tags
 
