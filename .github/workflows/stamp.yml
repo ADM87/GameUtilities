@@ -22,7 +22,7 @@ jobs:
           else
             echo "VERSION_TYPE=ignore" >> $GITHUB_OUTPUT
           fi
-          echo "version type: ${{ steps.check-versioning.outputs.VERSION_TYPE }}"
+          echo "version type: $VERSION_TYPE"
 
       - name: Generate a token
         id: app-token
