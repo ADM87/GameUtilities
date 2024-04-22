@@ -17,7 +17,7 @@ jobs:
       - name: Parse Branch Name
         id: parse_branch
         run: |
-          branch_name=$(echo "${{ github.event.pull_request.base.ref }}" | awk -F'/' '{print $2}')
+          branch_name=$(echo "${{ github.event.pull_request.head.ref }}" | awk -F'/' '{print $2}')
           if [[ $branch_name =~ ^(major|minor|patch)$ ]]; then
             echo "VERSION_TYPE=$branch_name" >> $GITHUB_ENV
           fi
@@ -25,7 +25,7 @@ jobs:
       - name: Print Environment Variable
         if: env.VERSION_TYPE
         run: echo $VERSION_TYPE
-        
+
       # - name: Generate a token
       #   id: app-token
       #   uses: actions/create-github-app-token@v1
