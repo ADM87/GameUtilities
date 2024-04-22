@@ -25,12 +25,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Set Branch Prefix
-        id: set_branch_prefix
-        run: |
-          echo "BRANCH_PREFIX=$(echo =~ ^(major|minor|patch)/.*$" >> $GITHUB_ENV
-
       - name: Create tag
+        env:
+          BRANCH_PREFIX: $(echo ${{ github.event.pull_request.head.ref }}=~ ^(major|minor|patch)/.*$)
         if: env.BRANCH_PREFIX
         run: |
           echo "BRANCH_PREFIX=${BRANCH_PREFIX}"
