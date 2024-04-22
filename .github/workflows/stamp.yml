@@ -45,7 +45,7 @@ jobs:
           echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ steps.set-version-type.outputs.VERSION_TYPE }}))" >> $GITHUB_OUTPUT
 
       - name: Push tag
-        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }} && ${{ steps.create-tag.outputs.VERSION_TAG != '' }}
         env:
           VERSION_TAG: ${{ steps.create-tag.outputs.VERSION_TAG }}
         run: |
