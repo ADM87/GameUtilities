@@ -25,3 +25,29 @@ jobs:
       - name: Print Environment Variable
         if: env.VERSION_TYPE
         run: echo $VERSION_TYPE
+        
+      # - name: Generate a token
+      #   id: app-token
+      #   uses: actions/create-github-app-token@v1
+      #   with:
+      #     app-id: ${{ vars.APP_ID }}
+      #     private-key: ${{ secrets.APP_KEY }}
+
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     token: ${{ steps.app-token.outputs.token }}
+
+      # - name: Create tag
+      #   run: |
+      #     chmod +x ./.github/scripts/create_tag.sh
+      #     echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ env.BRANCH_PREFIX }}))" >> $GITHUB_ENV
+
+      # - name: Push tag
+      #   if: env.VERSION_TAG
+      #   run: |
+      #     echo "VERSION_TAG=${{ env.VERSION_TAG }}"
+      #     git config user.name "GitHub Actions Bot"
+      #     git config user.email "<>"
+      #     git tag ${{ env.VERSION_TAG }} -m "Version ${{ env.VERSION_TAG }}"
+      #     git push origin ${{ env.VERSION_TAG }}
