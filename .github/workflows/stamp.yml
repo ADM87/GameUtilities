@@ -2,6 +2,8 @@ name: Stamp Versioning
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - closed
 
