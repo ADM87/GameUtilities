@@ -9,6 +9,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       RUNTIME_ROOT: './Runtime'
       RUNTIME_PROJ: 'GameUtilities.Runtime/GameUtilities.Runtime.csproj'
