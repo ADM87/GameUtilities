@@ -1,0 +1,73 @@
+name: Deploy to GameUtilities.Unity
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RUNTIME_ROOT: './Runtime'
+      RUNTIME_PROJ: './GameUtilities.Runtime/GameUtilities.Runtime.csproj'
+      RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
+      UNITY_ROOT: './Unity'
+      UNITY_REPO: 'https://github.com/ADM87/GameUtilities.Unity.git'
+      TEST_ROOT: './Tests'
+      TEST_PASS: './GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
+      TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
+      TEST_FAIL: './GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
+      TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
+      PUBLISH_PATH: './Publish'
+      DEPLOY_PATH: './Plugins/GameUtilitiesRuntime'
+
+    steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          path: ${{ env.RUNTIME_ROOT }}
+          fetch-tags: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build & Test
+        run: |
+          dotnet build ${{ env.RUNTIME_ROOT }}/${{ env.TEST_PASS }} -o ${{ env.TEST_ROOT }}
+          dotnet build ${{ env.RUNTIME_ROOT }}/${{ env.TEST_FAIL }} -o ${{ env.TEST_ROOT }}
+          dotnet test ${{ env.TEST_ROOT }}/${{ env.TEST_PASS_ARTIFACT }} ${{ env.TEST_ROOT }}/${{ env.TEST_FAIL_ARTIFACT }}
+
+      - name: Publish GameUtilities.Runtime
+        run: dotnet publish ${{ env.RUNTIME_ROOT }}/${{ env.RUNTIME_PROJ}} -c Release -o ${{ env.PUBLISH_PATH }}
+
+      - name: Checkout GameUtilities.Unity
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          repository: ${{ env.UNITY_REPO }}
+          path: ${{ env.UNITY_ROOT }}
+          ref: 'main'
+
+      - name: Copy GameUtilities.Runtime
+        run: cp -r ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
+
+      - name: Commit & Push
+        run: |
+          cd ${{ env.UNITY_ROOT }}
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git add .
+          git commit -m "Update GameUtilities.Runtime"
+          git push

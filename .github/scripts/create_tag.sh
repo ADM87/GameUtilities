@@ -9,10 +9,6 @@ if [[ -z "$PREFIX" ]]; then
     exit 1
 fi
 
-# TODO - This can probably be better.
-# Fetch tags from remote repository
-git fetch --tags
-
 # Get the last tag that matches the versioning pattern major.minor.patch
 last_tag=$(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1)
 
