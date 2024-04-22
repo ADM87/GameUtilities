@@ -14,17 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check if versioning is needed
-        id: check-mmp-versioning
+      - name: Is versioning required
+        id: check-versioning
         run: |
-          if [[ ${{ github.event.pull_request.head.ref }} =~ ^(major/|minor/|patch/) ]]; then
-            echo "VERSIONING=true" >> $GITHUB_ENV
+          if [[ ${{ github.event.pull_request.head.ref }} =~ ^(major|minor|patch)/.*$ ]]; then
+            echo "VERSIONING=true" >> $GITHUB_OUTPUT
           else
-            echo "VERSIONING=false" >> $GITHUB_ENV
+            echo "VERSIONING=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Generate a token
-        if: steps.check-mmp-versioning.outputs.VERSIONING == 'true'
+        if: ${{ steps.check-versioning.outputs.VERSIONING }} == 'true'
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
