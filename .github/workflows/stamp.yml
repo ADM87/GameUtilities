@@ -20,12 +20,13 @@ jobs:
           if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/.*$ ]]; then
             echo "VERSION_TYPE=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION_TYPE=unknown" >> $GITHUB_OUTPUT
+            echo "VERSION_TYPE=ignore" >> $GITHUB_OUTPUT
           fi
+          echo "version type: ${{ steps.check-versioning.outputs.VERSION_TYPE }}"
 
       - name: Generate a token
         id: app-token
-        if: ${{ steps.check-versioning.outputs.VERSION_TYPE != 'unknown' }}
+        if: ${{ steps.check-versioning.outputs.VERSION_TYPE != 'ignore' }}
         run: |
           echo VERSIONING=${{ steps.check-versioning.outputs.VERSION_TYPE }}
 
