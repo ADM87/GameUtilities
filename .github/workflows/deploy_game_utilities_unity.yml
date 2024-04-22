@@ -36,7 +36,6 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           path: ${{ env.RUNTIME_ROOT }}
-          fetch-tags: true
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
