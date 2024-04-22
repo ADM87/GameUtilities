@@ -11,6 +11,8 @@ jobs:
     if: ${{ github.event.pull_request.merged }} && ${{ github.base_ref == 'main' }}
 
     runs-on: ubuntu-latest
+    env:
+      VERSION_TAG: ""
 
     steps:
       - name: Generate a token
