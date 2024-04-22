@@ -1,4 +1,4 @@
-name: Unit Test Workflow
+name: Unit Test
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup .NET
@@ -22,11 +22,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build Tests.Pass
-        run: dotnet build ./GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj
-
-      - name: Build Tests.Fail
-        run: dotnet build ./GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj
+      - name: Build Tests
+        run: |
+          dotnet build ./GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj
+          dotnet build ./GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj
 
       - name: Run Tests
         run: dotnet test

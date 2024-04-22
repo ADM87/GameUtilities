@@ -1,4 +1,4 @@
-name: Version Tag
+name: Tag Version
 
 on:
   pull_request:
@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set versioning type
-        id: set-version-type
+      - name: Version Type
+        id: version-type
         run: |
           if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/.*$ ]]; then
             echo "VERSION_TYPE=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
@@ -23,29 +23,29 @@ jobs:
             echo "Branch name does not start with major/, minor/, or patch/. Ignoring versioning."
           fi
 
-      - name: Generate a token
-        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+      - name: Generate Token
+        if: ${{ steps.version-type.outputs.VERSION_TYPE != 'ignore' }}
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_KEY }}
 
-      - name: Checkout code
-        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+      - name: Checkout
+        if: ${{ steps.version-type.outputs.VERSION_TYPE != 'ignore' }}
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Create tag
-        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+      - name: Create Tag
+        if: ${{ steps.version-type.outputs.VERSION_TYPE != 'ignore' }}
         id: create-tag
         run: |
           chmod +x ./.github/scripts/create_tag.sh
-          echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ steps.set-version-type.outputs.VERSION_TYPE }}))" >> $GITHUB_OUTPUT
+          echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ steps.version-type.outputs.VERSION_TYPE }}))" >> $GITHUB_OUTPUT
 
-      - name: Push tag
-        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }} && ${{ steps.create-tag.outputs.VERSION_TAG != '' }}
+      - name: Push Tag
+        if: ${{ steps.version-type.outputs.VERSION_TYPE != 'ignore' }} && ${{ steps.create-tag.outputs.VERSION_TAG != '' }}
         env:
           VERSION_TAG: ${{ steps.create-tag.outputs.VERSION_TAG }}
         run: |
