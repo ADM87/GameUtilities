@@ -10,25 +10,44 @@ on:
 jobs:
   tag_version:
     if: ${{ github.event.pull_request.merged }} && ${{ github.event.pull_request.base.ref == 'main' }}
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Set versioning type
-        id: check-versioning
+        id: set-version-type
         run: |
           if [[ "${{ github.event.pull_request.head.ref }}" =~ ^(major|minor|patch)/.*$ ]]; then
             echo "VERSION_TYPE=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
           else
             echo "VERSION_TYPE=ignore" >> $GITHUB_OUTPUT
+            echo "Branch name does not start with major/, minor/, or patch/. Ignoring versioning."
           fi
-          echo "version type: $VERSION_TYPE"
 
       - name: Generate a token
+        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
         id: app-token
-        if: ${{ steps.check-versioning.outputs.VERSION_TYPE != 'ignore' }}
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+
+      - name: Checkout code
+        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Create tag
+        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+        id: create-tag
         run: |
-          echo VERSIONING=${{ steps.check-versioning.outputs.VERSION_TYPE }}
+          chmod +x ./.github/scripts/create_tag.sh
+          echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ steps.set-version-type.outputs.VERSION_TYPE }}))" >> $GITHUB_OUTPUT
+
+      - name: Push tag
+        if: ${{ steps.set-version-type.outputs.VERSION_TYPE != 'ignore' }}
+        run: |
+          echo "VERSION_TAG=${{ steps.set-version-type.outputs.VERSION_TYPE }}"
 
 
 
@@ -36,25 +55,6 @@ jobs:
 
 
 
-# uses: actions/create-github-app-token@v1
-# with:
-#   app-id: ${{ vars.APP_ID }}
-#   private-key: ${{ secrets.APP_KEY }}
-
-# - name: Checkout code
-#   uses: actions/checkout@v4
-#   with:
-#     token: ${{ steps.app-token.outputs.token }}
-
-# - name: Create tag
-#   id: create-tag
-#   run: |
-#     chmod +x ./.github/scripts/create_tag.sh
-#     echo "VERSION_TAG=$(echo $(./.github/scripts/create_tag.sh ${{ github.event.pull_request.head.ref }}))" >> $GITHUB_OUTPUT
-
-# - name: Push tag
-#   run: |
-#     echo "VERSION_TAG=${{ steps.create_tag.outputs.VERSION_TAG }}"
 # git config user.name "GitHub Actions Bot"
 # git config user.email "<>"
 # git tag ${{ env.VERSION_TAG }} -m "Version ${{ env.VERSION_TAG }}"

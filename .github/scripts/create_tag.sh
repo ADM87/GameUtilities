@@ -9,12 +9,6 @@ if [[ -z "$PREFIX" ]]; then
     exit 1
 fi
 
-# Validate branch name pattern
-if [[ ! "$PREFIX" =~ ^(major|minor|patch)/.*$ ]]; then
-    echo "Invalid branch prefix format. Expected format: major/, minor/, or patch/ prefix." >&2
-    exit 1
-fi
-
 # Fetch tags from remote repository
 if ! git fetch --tags; then
     echo "Failed to fetch tags from remote repository." >&2
@@ -31,14 +25,14 @@ last_tag=${last_tag:-"v0.0.0"}
 IFS='.' read -r major_version minor_version patch_version <<< "${last_tag#v}"
 
 # Check for major/ prefix
-if [[ "$BRANCH_NAME" == major/* ]]; then
+if [[ "$PREFIX" == major* ]]; then
     major_version=$((major_version + 1))
     minor_version=0
     patch_version=0
-elif [[ "$BRANCH_NAME" == minor/* ]]; then
+elif [[ "$BRANCH_NAME" == minor* ]]; then
     minor_version=$((minor_version + 1))
     patch_version=0
-elif [[ "$BRANCH_NAME" == patch/* ]]; then
+elif [[ "$BRANCH_NAME" == patch* ]]; then
     patch_version=$((patch_version + 1))
 fi
 
