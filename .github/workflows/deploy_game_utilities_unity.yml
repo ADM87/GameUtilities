@@ -26,9 +26,17 @@ jobs:
       DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime'
 
     steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ steps.app-token.outputs.token }}
           path: ${{ env.RUNTIME_ROOT }}
 
       - name: Fetch Version
@@ -54,6 +62,7 @@ jobs:
       - name: Checkout GameUtilities.Unity
         uses: actions/checkout@v4
         with:
+          token: ${{ steps.app-token.outputs.token }}
           repository: ${{ env.UNITY_REPO }}
           path: ${{ env.UNITY_ROOT }}
           ref: 'main'
