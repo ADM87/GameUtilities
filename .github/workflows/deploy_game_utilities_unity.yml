@@ -26,17 +26,9 @@ jobs:
       DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime'
 
     steps:
-      - name: Generate Token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.APP_KEY }}
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ steps.app-token.outputs.token }}
           persist-credentials: true
           path: ${{ env.RUNTIME_ROOT }}
 
