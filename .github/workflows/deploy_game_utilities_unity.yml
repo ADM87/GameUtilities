@@ -93,7 +93,7 @@ jobs:
           git checkout -b ${{ env.BRANCH_NAME }}
           git add .
           git commit -m "${{ env.COMMIT_MESSAGE }}"
-          git push --set-upstream origin ${{ env.BRANCH_NAME }}
+          # git push --set-upstream origin ${{ env.BRANCH_NAME }}
           cd ..
 
       - name: Create Pull Request
@@ -103,6 +103,7 @@ jobs:
           token: ${{ secrets.SSH_KEY }}
           path: ${{ env.UNITY_ROOT }}
           title: ${{ env.COMMIT_MESSAGE }}
+          commit-message: ${{ env.COMMIT_MESSAGE }}
           body: 'This PR updates the GameUtilities.Runtime package to version ${{ env.VERSION_TAG }}.'
           branch: ${{ env.BRANCH_NAME }}
           base: 'main'
