@@ -19,7 +19,7 @@ jobs:
       RUNTIME_PROJ: 'GameUtilities.Runtime/GameUtilities.Runtime.csproj'
       TEST_PASS: 'GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
       TEST_FAIL: 'GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
-      DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime'
+      DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime/'
       RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
       TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
       TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
@@ -61,7 +61,9 @@ jobs:
           ref: 'main'
 
       - name: Copy GameUtilities.Runtime
-        run: cp ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
+        run: |
+          mkdir -p ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
+          cp ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
 
       - name: Commit & Push
         if: ${{ env.VERSION_TAG }}
