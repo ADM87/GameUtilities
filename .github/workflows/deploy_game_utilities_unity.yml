@@ -81,6 +81,9 @@ jobs:
           git config user.name "${{ secrets.GIT_USER }}"
           git config user.email "${{ secrets.GIT_EMAIL }}"
 
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+          echo "COMMIT_MESSAGE=${{ env.COMMIT_MESSAGE }}" >> $GITHUB_ENV
+
           PACKAGE_JSON_PATH="${{ env.PACKAGE_JSON }}"
           CURRENT_VERSION=$(grep -oP '(?<="version": ")[^"]*' $PACKAGE_JSON_PATH)
           NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$3 = $3 + 1; print}' OFS=.)
