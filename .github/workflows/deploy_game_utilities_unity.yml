@@ -76,7 +76,7 @@ jobs:
           git config user.name "${{ secrets.GIT_USER }}"
           git config user.email "${{ secrets.GIT_EMAIL }}"
 
-          PACKAGE_JSON_PATH="${{ env.UNITY_ROOT }}/${{ env.PACKAGE_JSON }}"
+          PACKAGE_JSON_PATH="${{ env.PACKAGE_JSON }}"
           CURRENT_VERSION=$(grep -oP '(?<="version": ")[^"]*' $PACKAGE_JSON_PATH)
           NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$2 = $2 + 1; print}' OFS=.)
 
