@@ -41,11 +41,13 @@ jobs:
           cd ..
 
       - name: Setup .NET
+        if: ${{ env.VERSION_TAG }}
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.0.x'
 
       - name: Build & Test
+        if: ${{ env.VERSION_TAG }}
         run: |
           dotnet build ${{ env.RUNTIME_ROOT }}/${{ env.TEST_PASS }} -o ${{ env.TEST_ROOT }}
           dotnet build ${{ env.RUNTIME_ROOT }}/${{ env.TEST_FAIL }} -o ${{ env.TEST_ROOT }}
@@ -55,6 +57,7 @@ jobs:
         run: dotnet publish ${{ env.RUNTIME_ROOT }}/${{ env.RUNTIME_PROJ}} -c Release -o ${{ env.PUBLISH_PATH }}
 
       - name: Checkout GameUtilities.Unity
+        if: ${{ env.VERSION_TAG }}
         uses: actions/checkout@v4
         with:
           repository: ${{ env.DEPLOYMENT_REPO }}
@@ -63,6 +66,7 @@ jobs:
           ref: 'main'
 
       - name: Copy GameUtilities.Runtime
+        if: ${{ env.VERSION_TAG }}
         run: |
           mkdir -p ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
           cp ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
@@ -71,10 +75,14 @@ jobs:
         if: ${{ env.VERSION_TAG }}
         env:
           BRANCH_NAME: 'patch/update-gameutilities-runtime-${{ env.VERSION_TAG }}'
+          COMMIT_MESSAGE: 'Update GameUtilities.Runtime to ${{ env.VERSION_TAG }}'
         run: |
           cd ${{ env.UNITY_ROOT }}
           git config user.name "${{ secrets.GIT_USER }}"
           git config user.email "${{ secrets.GIT_EMAIL }}"
+
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}" >> $GITHUB_ENV
+          echo "COMMIT_MESSAGE=${{ env.COMMIT_MESSAGE }}" >> $GITHUB_ENV
 
           PACKAGE_JSON_PATH="${{ env.PACKAGE_JSON }}"
           CURRENT_VERSION=$(grep -oP '(?<="version": ")[^"]*' $PACKAGE_JSON_PATH)
@@ -84,6 +92,15 @@ jobs:
 
           git checkout -b ${{ env.BRANCH_NAME }}
           git add .
-          git commit -m "Update GameUtilities.Runtime to ${{ env.VERSION_TAG }}"
+          git commit -m "${{ env.COMMIT_MESSAGE }}"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
+          cd ..
+
+      - name: Create Pull Request
+        if: ${{ env.VERSION_TAG }}
+        env:
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          cd ${{ env.UNITY_ROOT }}
+          gh pr create --title "${{ env.COMMIT_MESSAGE }}" --body "${{ env.COMMIT_MESSAGE }}" --base main --head ${{ env.BRANCH_NAME }}
           cd ..
