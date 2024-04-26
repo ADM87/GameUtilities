@@ -23,6 +23,7 @@ jobs:
       RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
       TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
       TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
+      PACKAGE_JSON: 'package.json'
 
     steps:
       - name: Checkout
@@ -69,11 +70,18 @@ jobs:
       - name: Commit & Push
         if: ${{ env.VERSION_TAG }}
         env:
-          BRANCH_NAME: 'update-runtime-${{ env.VERSION_TAG }}'
+          BRANCH_NAME: 'patch/update-gameutilities-runtime-${{ env.VERSION_TAG }}'
         run: |
           cd ${{ env.UNITY_ROOT }}
           git config user.name "${{ secrets.GIT_USER }}"
           git config user.email "${{ secrets.GIT_EMAIL }}"
+
+          PACKAGE_JSON_PATH="${{ env.UNITY_ROOT }}/${{ env.PACKAGE_JSON }}"
+          CURRENT_VERSION=$(grep -oP '(?<="version": ")[^"]*' $PACKAGE_JSON_PATH)
+          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$2 = $2 + 1; print}' OFS=.)
+
+          sed -i "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" $PACKAGE_JSON_PATH
+
           git checkout -b ${{ env.BRANCH_NAME }}
           git add .
           git commit -m "Update GameUtilities.Runtime to ${{ env.VERSION_TAG }}"
