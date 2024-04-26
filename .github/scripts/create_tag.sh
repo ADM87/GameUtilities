@@ -10,7 +10,7 @@ if [[ -z "$PREFIX" ]]; then
 fi
 
 # Fetch tags from remote repository
-git fetch --tags
+git fetch --tags --force
 
 # Get the last tag that matches the versioning pattern major.minor.patch
 last_tag=$(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1)
