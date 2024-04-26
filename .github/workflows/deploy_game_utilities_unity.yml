@@ -78,7 +78,7 @@ jobs:
 
           PACKAGE_JSON_PATH="${{ env.PACKAGE_JSON }}"
           CURRENT_VERSION=$(grep -oP '(?<="version": ")[^"]*' $PACKAGE_JSON_PATH)
-          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$2 = $2 + 1; print}' OFS=.)
+          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$3 = $3 + 1; print}' OFS=.)
 
           sed -i "s/\"version\": \"$CURRENT_VERSION\"/\"version\": \"$NEW_VERSION\"/" $PACKAGE_JSON_PATH
 
