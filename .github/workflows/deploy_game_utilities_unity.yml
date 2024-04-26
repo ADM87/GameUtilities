@@ -98,16 +98,7 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ env.VERSION_TAG }}
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.SSH_KEY }}
-          path: ${{ env.UNITY_ROOT }}
-          title: ${{ env.COMMIT_MESSAGE }}
-          commit-message: ${{ env.COMMIT_MESSAGE }}
-          body: 'This PR updates the GameUtilities.Runtime package to version ${{ env.VERSION_TAG }}.'
-          branch: ${{ env.BRANCH_NAME }}
-          base: 'main'
-          labels: 'dependencies'
-          reviewers: 'ADM87'
-          assignees: 'ADM87'
-          draft: false
+        run: |
+          cd ${{ env.UNITY_ROOT }}
+          gh pr create --title "${{ env.COMMIT_MESSAGE }}" --body "${{ env.COMMIT_MESSAGE }}" --base main --head ${{ env.BRANCH_NAME }}
+          cd ..
