@@ -96,18 +96,10 @@ jobs:
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
           cd ..
 
-      - name: Generate Token
-        if: ${{ env.VERSION_TAG }}
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ vars.APP_ID }}
-          private-key: ${{ secrets.APP_KEY }}
-
       - name: Create Pull Request
         if: ${{ env.VERSION_TAG }}
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
         run: |
           cd ${{ env.UNITY_ROOT }}
           gh pr create --title "${{ env.COMMIT_MESSAGE }}" --body "${{ env.COMMIT_MESSAGE }}" --base main --head ${{ env.BRANCH_NAME }}
