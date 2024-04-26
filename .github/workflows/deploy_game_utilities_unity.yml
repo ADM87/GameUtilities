@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      DEPLOYMENT_REPO: 'ADM87/GameUtilities.Unity'
       RUNTIME_ROOT: './Runtime'
-      RUNTIME_PROJ: 'GameUtilities.Runtime/GameUtilities.Runtime.csproj'
-      RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
       UNITY_ROOT: './Unity'
-      UNITY_REPO: 'ADM87/GameUtilities.Unity'
       TEST_ROOT: './Tests'
-      TEST_PASS: 'GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
-      TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
-      TEST_FAIL: 'GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
-      TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
       PUBLISH_PATH: './Publish'
+      RUNTIME_PROJ: 'GameUtilities.Runtime/GameUtilities.Runtime.csproj'
+      TEST_PASS: 'GameUtilities.Tests/Tests.Pass/Tests.Pass.csproj'
+      TEST_FAIL: 'GameUtilities.Tests/Tests.Fail/Tests.Fail.csproj'
       DEPLOY_PATH: 'Plugins/GameUtilitiesRuntime'
+      RUNTIME_ARTIFACT: 'GameUtilities.Runtime.dll'
+      TEST_PASS_ARTIFACT: 'Tests.Pass.dll'
+      TEST_FAIL_ARTIFACT: 'Tests.Fail.dll'
 
     steps:
       - name: Checkout
@@ -61,7 +61,7 @@ jobs:
           ref: 'main'
 
       - name: Copy GameUtilities.Runtime
-        run: cp -r ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
+        run: cp ${{ env.PUBLISH_PATH }}/${{ env.RUNTIME_ARTIFACT }} ${{ env.UNITY_ROOT }}/${{ env.DEPLOY_PATH }}
 
       - name: Commit & Push
         if: ${{ env.VERSION_TAG }}
