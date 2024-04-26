@@ -56,7 +56,7 @@ jobs:
       - name: Checkout GameUtilities.Unity
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.UNITY_REPO }}
+          repository: ${{ env.DEPLOYMENT_REPO }}
           path: ${{ env.UNITY_ROOT }}
           ssh-key: ${{ secrets.SSH_KEY }}
           ref: 'main'
