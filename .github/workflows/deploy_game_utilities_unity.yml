@@ -35,6 +35,7 @@ jobs:
       - name: Fetch Version
         run: |
           cd ${{ env.RUNTIME_ROOT }}
+          git fetch --tags
           echo "VERSION_TAG=$(echo $(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1))" >> $GITHUB_ENV
           cd ..
 
