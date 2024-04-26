@@ -13,7 +13,7 @@ fi
 git fetch --tags
 
 # Get the last tag that matches the versioning pattern major.minor.patch
-last_tag=$(git ls-remote --tags origin 'v[0-9]*.[0-9]*.[0-9]*' | awk -F/ '{print $3}' | awk -F[^0-9] '{print $1}' | sort -rV | head -n 1)
+last_tag=$(git tag -l --sort=-v:refname 'v[0-9]*.[0-9]*.[0-9]*' | head -n 1)
 
 # Default to v0.0.0 if no previous tags exist
 last_tag=${last_tag:-"v0.0.0"}
