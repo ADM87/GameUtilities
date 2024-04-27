@@ -22,9 +22,10 @@ namespace ADM87.GameUtilities.Async
             _cancellationTokenSource    = new CancellationTokenSource();
         }
 
-        internal void SetCallbacks(IAsyncService.AsyncOperationCallback completed,
-                                   IAsyncService.AsyncOperationCallback cancelled,
-                                   IAsyncService.AsyncOperationExceptionCallback faulted)
+        internal void SetCallbacks(
+            IAsyncService.AsyncOperationCallback completed,
+            IAsyncService.AsyncOperationCallback cancelled,
+            IAsyncService.AsyncOperationExceptionCallback faulted)
         {
             _completed  = completed;
             _cancelled  = cancelled;
