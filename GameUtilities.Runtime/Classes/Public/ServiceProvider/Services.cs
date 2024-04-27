@@ -11,7 +11,7 @@ namespace ADM87.GameUtilities.ServiceProvider
     /// </summary>
     public static class Services
     {
-        internal static ServiceCollection Collection { get; } = new();
+        internal static ServiceCollection Collection { get; } = new ServiceCollection();
 
         /// <summary>
         /// Collects service definitions from all assemblies in the current application domain.
@@ -141,7 +141,7 @@ namespace ADM87.GameUtilities.ServiceProvider
                                                                                   | BindingFlags.NonPublic
                                                                                   | BindingFlags.Public
                                                                                   | BindingFlags.DeclaredOnly);
-            List<PropertyInfo> dependencies = new();
+            List<PropertyInfo> dependencies = new List<PropertyInfo>();
             foreach (PropertyInfo property in properties)
             {
                 if (property.GetCustomAttribute<ServiceDependencyAttribute>() == null)
@@ -163,7 +163,7 @@ namespace ADM87.GameUtilities.ServiceProvider
             foreach (PropertyInfo property in Collection[identityType].Dependencies)
             {
                 if (Collection.TryGetValue(property.PropertyType, out ServiceDefinition dependency))
-                    ResolveDependencies(dependency, new() { identityType });
+                    ResolveDependencies(dependency, new List<Type>() { identityType });
             }
         }
 
