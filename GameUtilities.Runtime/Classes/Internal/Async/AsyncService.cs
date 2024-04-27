@@ -9,7 +9,7 @@ namespace ADM87.GameUtilities.Async
     [ServiceDefinition(typeof(IAsyncService), isSingleton: true)]
     internal class AsyncService : IAsyncService
     {
-        private readonly OperationHandles _operationHandles = [];
+        private readonly OperationHandles _operationHandles = new OperationHandles();
 
         /// <inheritdoc/>
         public AsyncOperationHandle RunAsync(

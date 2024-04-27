@@ -135,6 +135,8 @@ namespace GameUtilities.Tests
                 Assert.Fail();
             };
             IAsyncService.AsyncOperationExceptionCallback faulted = (Exception exception) => {
+                if (exception is SuccessException)
+                    return;
                 Assert.Fail(exception.Message);
             };
             AsyncOperationHandle handle = asyncService.RunAsync(operation, completed, cancelled, faulted);
