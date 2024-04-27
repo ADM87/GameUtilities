@@ -42,6 +42,8 @@ namespace ADM87.GameUtilities.Async
                     try
                     {
                         await _operation(_cancellationTokenSource.Token);
+                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
                         Phase = EAsyncOperationPhase.Completed;
                         _completed?.Invoke();
                     }
