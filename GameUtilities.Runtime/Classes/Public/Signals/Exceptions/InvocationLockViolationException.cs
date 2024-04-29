@@ -1,11 +1,11 @@
 namespace ADM87.GameUtilities.Signals
 {
     /// <summary>
-    /// Exception thrown when a signal is invoked from an object that is not the lock object.
+    /// Exception thrown when an object tries to emit a signal that is locked to another object.
     /// </summary>
-    public sealed class InvocationLockViolationException : System.Exception
+    public sealed class EmissionLockViolationException : System.Exception
     {
-        public InvocationLockViolationException()
-            : base("Signal invocation is locked to another object.") { }
+        public EmissionLockViolationException()
+            : base("Signal emission is locked to another object.") { }
     }
 }

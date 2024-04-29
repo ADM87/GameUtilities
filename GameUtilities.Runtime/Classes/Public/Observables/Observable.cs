@@ -9,18 +9,18 @@ namespace ADM87.GameUtilities.Observables
     public class Observable<T> : Signal1<T>
     {
         private T       _value;
-        private bool    _alwaysInvoke;
+        private bool    _alwaysEmits;
 
         public T Value
         {
             get => _value;
             set
             {
-                if (_value.Equals(value) && !_alwaysInvoke)
+                if (_value.Equals(value) && !_alwaysEmits)
                     return;
 
                 _value = value;
-                Invoke(this, value);
+                Emit(this, value);
             }
         }
 
@@ -29,11 +29,11 @@ namespace ADM87.GameUtilities.Observables
         {
             _value = value;
         }
-        public Observable(T value, bool alwaysInvoke)
+        public Observable(T value, bool alwaysEmits)
             : base()
         {
             _value = value;
-            _alwaysInvoke = alwaysInvoke;
+            _alwaysEmits = alwaysEmits;
         }
     }
 }

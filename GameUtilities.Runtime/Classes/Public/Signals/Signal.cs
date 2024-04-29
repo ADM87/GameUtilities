@@ -15,20 +15,20 @@ namespace ADM87.GameUtilities.Signals
             : base(lockObject) {}
 
         /// <summary>
-        /// Subscribes to the signal.
+        /// Connent to the signal.
         /// </summary>
         /// <param name="callback"></param>
-        public void Subscribe(Action callback)
+        public void Connect(Action callback)
         {
             _callbacks -= callback;
             _callbacks += callback;
         }
 
         /// <summary>
-        /// Unsubscribes from the signal.
+        /// Disconnect from the signal.
         /// </summary>
         /// <param name="callback"></param>
-        public void Unsubscribe(Action callback)
+        public void Disconnect(Action callback)
         {
             _callbacks -= callback;
         }
@@ -53,11 +53,11 @@ namespace ADM87.GameUtilities.Signals
         /// <summary>
         /// Invokes the signal.
         /// </summary>
-        /// <exception cref="InvocationLockViolationException"></exception>
-        public void Invoke()
+        /// <exception cref="EmissionLockViolationException"></exception>
+        public void Emit()
         {
             if (_lock != this)
-                throw new InvocationLockViolationException();
+                throw new EmissionLockViolationException();
 
             _callbacks?.Invoke();
         }
@@ -66,11 +66,11 @@ namespace ADM87.GameUtilities.Signals
         /// Invokes the signal.
         /// </summary>
         /// <param name="lockObject"></param>
-        /// <exception cref="InvocationLockViolationException"></exception>
-        public void Invoke(object lockObject)
+        /// <exception cref="EmissionLockViolationException"></exception>
+        public void Emit(object lockObject)
         {
             if (_lock != lockObject)
-                throw new InvocationLockViolationException();
+                throw new EmissionLockViolationException();
 
             _callbacks?.Invoke();
         }
