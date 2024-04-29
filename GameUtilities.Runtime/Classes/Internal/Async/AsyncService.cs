@@ -14,17 +14,12 @@ namespace ADM87.GameUtilities.Async
         /// <inheritdoc/>
         public AsyncOperationHandle RunAsync(
             IAsyncService.AsyncOperation operation,
-            IAsyncService.AsyncOperationCallback completed = null,
-            IAsyncService.AsyncOperationCallback cancelled = null,
-            IAsyncService.AsyncOperationExceptionCallback faulted = null,
             bool startImmediately = true)
         {
             AsyncOperationHandle handle = new AsyncOperationHandle(operation);
-            handle.SetCallbacks(
-                BindCallback(completed, handle.Id),
-                BindCallback(cancelled, handle.Id),
-                BindCallback(faulted,   handle.Id)
-            );
+            handle.Completed.Subscribe(() => RemoveHandle(handle.Id));
+            handle.Cancelled.Subscribe(() => RemoveHandle(handle.Id));
+            handle.Faulted.Subscribe(ex => RemoveHandle(handle.Id));
             _operationHandles.Add(handle.Id, handle);
 
             if (startImmediately)
@@ -33,30 +28,10 @@ namespace ADM87.GameUtilities.Async
             return handle;
         }
 
-        private IAsyncService.AsyncOperationCallback BindCallback(
-            IAsyncService.AsyncOperationCallback callback,
-            Guid id)
+        private void RemoveHandle(Guid id)
         {
-            return () =>
-            {
-                if (_operationHandles.TryGetValue(id, out AsyncOperationHandle handle))
-                    _operationHandles.Remove(id);
-
-                callback?.Invoke();
-            };
-        }
-
-        private IAsyncService.AsyncOperationExceptionCallback BindCallback(
-            IAsyncService.AsyncOperationExceptionCallback callback,
-            Guid id)
-        {
-            return (Exception exception) =>
-            {
-                if (_operationHandles.TryGetValue(id, out AsyncOperationHandle handle))
-                    _operationHandles.Remove(id);
-
-                callback?.Invoke(exception);
-            };
+            if (_operationHandles.ContainsKey(id))
+                _operationHandles.Remove(id);
         }
     }
 }

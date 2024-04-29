@@ -1,37 +1,43 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ADM87.GameUtilities.Signals;
 
 namespace ADM87.GameUtilities.Async
 {
     public sealed class AsyncOperationHandle
     {
-        private readonly IAsyncService.AsyncOperation           _operation;
-        private readonly CancellationTokenSource                _cancellationTokenSource;
-        private IAsyncService.AsyncOperationCallback            _completed;
-        private IAsyncService.AsyncOperationCallback            _cancelled;
-        private IAsyncService.AsyncOperationExceptionCallback   _faulted;
+        private readonly IAsyncService.AsyncOperation   _operation;
+        private readonly CancellationTokenSource        _cancellationTokenSource;
 
-        public EAsyncOperationPhase Phase   { get; private set; }   = EAsyncOperationPhase.Pending;
-        public Guid Id                      { get; }                = Guid.NewGuid();
-        public Task OperationTask           { get; private set; }   = null;
+        public EAsyncOperationPhase Phase           { get; private set; }   = EAsyncOperationPhase.Pending;
+        public Task                 OperationTask   { get; private set; }   = null;
+        public Guid                 Id              { get; }                = Guid.NewGuid();
+        public Signal               Completed       { get; }
+        public Signal               Cancelled       { get; }
+        public Signal1<Exception>   Faulted         { get; }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="AsyncOperationHandle"/> class.
+        /// </summary>
+        /// <param name="operation"></param>
         internal AsyncOperationHandle(IAsyncService.AsyncOperation operation)
         {
             _operation                  = operation;
             _cancellationTokenSource    = new CancellationTokenSource();
+
+            Completed                   = new Signal(this);
+            Cancelled                   = new Signal(this);
+            Faulted                     = new Signal1<Exception>(this);
         }
 
-        internal void SetCallbacks(
-            IAsyncService.AsyncOperationCallback completed,
-            IAsyncService.AsyncOperationCallback cancelled,
-            IAsyncService.AsyncOperationExceptionCallback faulted)
-        {
-            _completed  = completed;
-            _cancelled  = cancelled;
-            _faulted    = faulted;
-        }
-
+        /// <summary>
+        /// Starts the operation.
+        /// </summary>
+        /// <remarks>
+        /// If the operation is not in the pending phase, an <see cref="InvalidOperationException"/> is thrown.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Start()
         {
             if (Phase != EAsyncOperationPhase.Pending)
@@ -45,21 +51,25 @@ namespace ADM87.GameUtilities.Async
                         _cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                         Phase = EAsyncOperationPhase.Completed;
-                        _completed?.Invoke();
+                        Completed.Invoke(this);
                     }
                     catch (OperationCanceledException)
                     {
                         Phase = EAsyncOperationPhase.Cancelled;
-                        _cancelled?.Invoke();
+                        Cancelled.Invoke(this);
                     }
                     catch (Exception e)
                     {
                         Phase = EAsyncOperationPhase.Faulted;
 
-                        if (_faulted != null)
-                            _faulted(e);
+                        if (Faulted.HasSubscribers())
+                            Faulted.Invoke(this, e);
                         else
                             throw;
+                    }
+                    finally
+                    {
+                        CleanUp();
                     }
                 },
             _cancellationTokenSource.Token);
@@ -67,12 +77,26 @@ namespace ADM87.GameUtilities.Async
             Phase = EAsyncOperationPhase.Running;
         }
 
+        /// <summary>
+        /// Cancels the operation.
+        /// </summary>
         public void Cancel()
         {
             if (Phase != EAsyncOperationPhase.Running)
                 return;
 
             _cancellationTokenSource.Cancel();
+        }
+
+        /// <summary>
+        /// Cleans up the operation.
+        /// </summary>
+        private void CleanUp()
+        {
+            Completed.Clear();
+            Cancelled.Clear();
+            Faulted.Clear();
+            _cancellationTokenSource.Dispose();
         }
     }
 }
