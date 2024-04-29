@@ -37,13 +37,13 @@ namespace GameUtilities.Tests
             Services.CollectServiceDefinitions();
             IAsyncService asyncService = Services.Get<IAsyncService>();
             AsyncOperationHandle handle = asyncService.RunAsync(PassAsyncMocks.SuccessAsyncOperation);
-            handle.Completed.Subscribe(() => {
+            handle.Completed.Connect(() => {
                 Assert.That(handle.Phase, Is.EqualTo(EAsyncOperationPhase.Completed));
             });
-            handle.Cancelled.Subscribe(() => {
+            handle.Cancelled.Connect(() => {
                 Assert.Fail("Operation was cancelled.");
             });
-            handle.Faulted.Subscribe((Exception ex) => {
+            handle.Faulted.Connect((Exception ex) => {
                 Assert.Fail($"Operation failed with exception: {ex.Message}");
             });
             await handle.OperationTask;
@@ -60,13 +60,13 @@ namespace GameUtilities.Tests
             Services.CollectServiceDefinitions();
             IAsyncService asyncService = Services.Get<IAsyncService>();
             AsyncOperationHandle handle = asyncService.RunAsync(PassAsyncMocks.CancelledAsyncOperation);
-            handle.Completed.Subscribe(() => {
+            handle.Completed.Connect(() => {
                 Assert.Fail("Operation was completed.");
             });
-            handle.Cancelled.Subscribe(() => {
+            handle.Cancelled.Connect(() => {
                 Assert.That(handle.Phase, Is.EqualTo(EAsyncOperationPhase.Cancelled));
             });
-            handle.Faulted.Subscribe((Exception ex) => {
+            handle.Faulted.Connect((Exception ex) => {
                 Assert.Fail($"Operation failed with exception: {ex.Message}");
             });
             await Task.Delay(100);
@@ -85,13 +85,13 @@ namespace GameUtilities.Tests
             Services.CollectServiceDefinitions();
             IAsyncService asyncService = Services.Get<IAsyncService>();
             AsyncOperationHandle handle = asyncService.RunAsync(PassAsyncMocks.FaultedAsyncOperation);
-            handle.Completed.Subscribe(() => {
+            handle.Completed.Connect(() => {
                 Assert.Fail("Operation was completed.");
             });
-            handle.Cancelled.Subscribe(() => {
+            handle.Cancelled.Connect(() => {
                 Assert.Fail("Operation was cancelled.");
             });
-            handle.Faulted.Subscribe((Exception ex) => {
+            handle.Faulted.Connect((Exception ex) => {
                 Assert.That(handle.Phase, Is.EqualTo(EAsyncOperationPhase.Faulted));
                 Assert.That(ex, Is.TypeOf<PassAsyncMocks.AsyncTestException>());
             });

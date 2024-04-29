@@ -12,14 +12,12 @@ namespace ADM87.GameUtilities.Async
         private readonly OperationHandles _operationHandles = new OperationHandles();
 
         /// <inheritdoc/>
-        public AsyncOperationHandle RunAsync(
-            IAsyncService.AsyncOperation operation,
-            bool startImmediately = true)
+        public AsyncOperationHandle RunAsync(IAsyncService.AsyncOperation operation, bool startImmediately = true)
         {
             AsyncOperationHandle handle = new AsyncOperationHandle(operation);
-            handle.Completed.Subscribe(() => RemoveHandle(handle.Id));
-            handle.Cancelled.Subscribe(() => RemoveHandle(handle.Id));
-            handle.Faulted.Subscribe(ex => RemoveHandle(handle.Id));
+            handle.Completed.Connect(() => RemoveHandle(handle.Id));
+            handle.Cancelled.Connect(() => RemoveHandle(handle.Id));
+            handle.Faulted.Connect(ex => RemoveHandle(handle.Id));
             _operationHandles.Add(handle.Id, handle);
 
             if (startImmediately)

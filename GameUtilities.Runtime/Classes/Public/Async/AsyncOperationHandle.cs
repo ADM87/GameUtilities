@@ -51,19 +51,19 @@ namespace ADM87.GameUtilities.Async
                         _cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                         Phase = EAsyncOperationPhase.Completed;
-                        Completed.Invoke(this);
+                        Completed.Emit(this);
                     }
                     catch (OperationCanceledException)
                     {
                         Phase = EAsyncOperationPhase.Cancelled;
-                        Cancelled.Invoke(this);
+                        Cancelled.Emit(this);
                     }
                     catch (Exception e)
                     {
                         Phase = EAsyncOperationPhase.Faulted;
 
                         if (Faulted.HasSubscribers())
-                            Faulted.Invoke(this, e);
+                            Faulted.Emit(this, e);
                         else
                             throw;
                     }
