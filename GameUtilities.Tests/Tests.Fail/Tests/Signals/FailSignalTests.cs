@@ -9,22 +9,23 @@ namespace GameUtilities.Tests
     public class FailSignalTests
     {
         /// <summary>
-        /// Tests that an unlocked signal cannot be emitted with a lock object.
+        /// Tests that a signal cannot be emitted without the proper key
         /// </summary>
         [Test, Order(1)]
         public void FailUnlockedSignalEmit()
         {
             Signal signal = new Signal();
-            Assert.Throws<EmissionLockViolationException>(() => signal.Emit(lockObject: this));
+            Assert.Throws<EmissionLockViolationException>(() => signal.Emit(Guid.NewGuid()));
         }
 
         /// <summary>
-        /// Tests that the signal cannot be emitted without a lock object.
+        /// Tests that a locked signal cannot be emitted without the proper key
         /// </summary>
         [Test, Order(2)]
         public void FailLockedSignalEmit()
         {
-            Signal signal = new Signal(this);
+            Guid signalKey = Guid.NewGuid();
+            Signal signal = new Signal(signalKey);
             Assert.Throws<EmissionLockViolationException>(() => signal.Emit());
         }
     }

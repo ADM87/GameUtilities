@@ -36,9 +36,10 @@ namespace GameUtilities.Tests
         [Test, Order(3)]
         public void PassSignalLockEmit()
         {
-            Signal signal = new Signal(lockObject: this);
+            Guid signalKey = Guid.NewGuid();
+            Signal signal = new Signal(signalKey);
             signal.Connect(() => Assert.Pass());
-            signal.Emit(lockObject: this);
+            signal.Emit(signalKey);
         }
     }
 }

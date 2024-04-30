@@ -8,12 +8,13 @@ namespace ADM87.GameUtilities.Signals
     /// <typeparam name="T"></typeparam>
     public class Signal1<T> : SignalBase
     {
+        /// <summary>
+        /// The callbacks subscribed to the signal.
+        /// </summary>
         private event Action<T> _callbacks;
 
-        public Signal1()
-            : base() { }
-        public Signal1(object lockObject)
-            : base(lockObject) { }
+        public Signal1()            : base()    {}
+        public Signal1(Guid key)    : base(key) {}
 
         /// <summary>
         /// Connect to the signal.
@@ -58,7 +59,7 @@ namespace ADM87.GameUtilities.Signals
         /// <exception cref="EmissionLockViolationException"></exception>
         public void Emit(T arg)
         {
-            if (_lock != this)
+            if (IsLocked(Guid.Empty))
                 throw new EmissionLockViolationException();
 
             _callbacks?.Invoke(arg);
@@ -70,9 +71,9 @@ namespace ADM87.GameUtilities.Signals
         /// <param name="lockObject"></param>
         /// <param name="arg"></param>
         /// <exception cref="EmissionLockViolationException"></exception>
-        public void Emit(object lockObject, T arg)
+        public void Emit(Guid key, T arg)
         {
-            if (_lock != lockObject)
+            if (IsLocked(key))
                 throw new EmissionLockViolationException();
 
             _callbacks?.Invoke(arg);

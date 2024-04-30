@@ -9,10 +9,8 @@ namespace ADM87.GameUtilities.Signals
     {
         private event Action  _callbacks;
 
-        public Signal()
-            : base() {}
-        public Signal(object lockObject)
-            : base(lockObject) {}
+        public Signal()         : base() {}
+        public Signal(Guid key) : base(key) {}
 
         /// <summary>
         /// Connent to the signal.
@@ -56,7 +54,7 @@ namespace ADM87.GameUtilities.Signals
         /// <exception cref="EmissionLockViolationException"></exception>
         public void Emit()
         {
-            if (_lock != this)
+            if (IsLocked(Guid.Empty))
                 throw new EmissionLockViolationException();
 
             _callbacks?.Invoke();
@@ -65,11 +63,11 @@ namespace ADM87.GameUtilities.Signals
         /// <summary>
         /// Invokes the signal.
         /// </summary>
-        /// <param name="lockObject"></param>
+        /// <param name="lockKey"></param>
         /// <exception cref="EmissionLockViolationException"></exception>
-        public void Emit(object lockObject)
+        public void Emit(Guid key)
         {
-            if (_lock != lockObject)
+            if (IsLocked(key))
                 throw new EmissionLockViolationException();
 
             _callbacks?.Invoke();

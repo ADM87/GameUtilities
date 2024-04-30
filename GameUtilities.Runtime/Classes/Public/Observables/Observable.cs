@@ -1,3 +1,4 @@
+using System;
 using ADM87.GameUtilities.Signals;
 
 namespace ADM87.GameUtilities.Observables
@@ -8,9 +9,19 @@ namespace ADM87.GameUtilities.Observables
     /// <typeparam name="T"></typeparam>
     public class Observable<T> : Signal1<T>
     {
+        /// <summary>
+        /// The value of the observable.
+        /// </summary>
         private T       _value;
+        /// <summary>
+        /// Whether or not the observable should always emit a signal when the value is set,
+        /// regardless if the value has changed.
+        /// </summary>
         private bool    _alwaysEmits;
 
+        /// <summary>
+        /// The value of the observable. Emits a signal when set.
+        /// </summary>
         public T Value
         {
             get => _value;
@@ -20,7 +31,7 @@ namespace ADM87.GameUtilities.Observables
                     return;
 
                 _value = value;
-                Emit(this, value);
+                Emit(_key, value);
             }
         }
 
