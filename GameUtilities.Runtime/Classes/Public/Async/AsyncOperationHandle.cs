@@ -35,13 +35,13 @@ namespace ADM87.GameUtilities.Async
         /// Starts the operation.
         /// </summary>
         /// <remarks>
-        /// If the operation is not in the pending phase, an <see cref="InvalidOperationException"/> is thrown.
+        /// If the operation is not in the pending phase, an <see cref="InvalidAsyncHandleOperation"/> is thrown.
         /// </remarks>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidAsyncHandleOperation"></exception>
         public void Start()
         {
             if (Phase != EAsyncOperationPhase.Pending)
-                throw new InvalidOperationException("Cannot start an operation that is not in the pending phase.");
+                throw new InvalidAsyncHandleOperation($"Cannot start an async operation that is not in a pending phase. Phase={Phase}");
 
             OperationTask = Task.Run(async () =>
                 {
@@ -83,7 +83,7 @@ namespace ADM87.GameUtilities.Async
         public void Cancel()
         {
             if (Phase != EAsyncOperationPhase.Running)
-                return;
+                throw new InvalidAsyncHandleOperation($"Cannot cancel an operation that is not in the Running phase. Phase={Phase}");
 
             _cancellationTokenSource.Cancel();
         }
