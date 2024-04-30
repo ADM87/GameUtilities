@@ -7,6 +7,7 @@ namespace ADM87.GameUtilities.Async
 {
     public sealed class AsyncOperationHandle
     {
+        private readonly Guid                           _signalKey = Guid.NewGuid();
         private readonly IAsyncService.AsyncOperation   _operation;
         private readonly CancellationTokenSource        _cancellationTokenSource;
 
@@ -26,9 +27,9 @@ namespace ADM87.GameUtilities.Async
             _operation                  = operation;
             _cancellationTokenSource    = new CancellationTokenSource();
 
-            Completed                   = new Signal(this);
-            Cancelled                   = new Signal(this);
-            Faulted                     = new Signal1<Exception>(this);
+            Completed                   = new Signal(_signalKey);
+            Cancelled                   = new Signal(_signalKey);
+            Faulted                     = new Signal1<Exception>(_signalKey);
         }
 
         /// <summary>
@@ -51,19 +52,19 @@ namespace ADM87.GameUtilities.Async
                         _cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                         Phase = EAsyncOperationPhase.Completed;
-                        Completed.Emit(this);
+                        Completed.Emit(_signalKey);
                     }
                     catch (OperationCanceledException)
                     {
                         Phase = EAsyncOperationPhase.Cancelled;
-                        Cancelled.Emit(this);
+                        Cancelled.Emit(_signalKey);
                     }
                     catch (Exception e)
                     {
                         Phase = EAsyncOperationPhase.Faulted;
 
                         if (Faulted.HasSubscribers())
-                            Faulted.Emit(this, e);
+                            Faulted.Emit(_signalKey, e);
                         else
                             throw;
                     }

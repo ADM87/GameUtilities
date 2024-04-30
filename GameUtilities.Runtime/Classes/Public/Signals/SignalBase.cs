@@ -1,16 +1,29 @@
+using System;
+
 namespace ADM87.GameUtilities.Signals
 {
+    /// <summary>
+    /// Represents a signal that can be invoked without any arguments.
+    /// </summary>
     public abstract class SignalBase
     {
-        protected object _lock;
+        /// <summary>
+        /// The key used to lock the signal.
+        /// Only this key can invoke the signal.
+        /// </summary>
+        protected Guid _key;
 
-        public SignalBase()
+        public SignalBase()         { _key = Guid.Empty; }
+        public SignalBase(Guid key) { _key = key; }
+
+        /// <summary>
+        /// Checks is the signal is locked using the provided key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        protected bool IsLocked(Guid key)
         {
-            _lock = this;
-        }
-        public SignalBase(object lockObject)
-        {
-            _lock = lockObject;
+            return !key.Equals(_key);
         }
     }
 }
