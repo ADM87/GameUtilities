@@ -12,19 +12,12 @@ namespace ADM87.GameUtilities.Async
         private readonly OperationHandles _operationHandles = new OperationHandles();
 
         /// <inheritdoc/>
-        public AsyncOperationHandle RunAsync(
-            IAsyncService.AsyncOperation operation,
-            IAsyncService.AsyncOperationCallback completed = null,
-            IAsyncService.AsyncOperationCallback cancelled = null,
-            IAsyncService.AsyncOperationExceptionCallback faulted = null,
-            bool startImmediately = true)
+        public AsyncOperationHandle RunAsync(IAsyncService.AsyncOperation operation, bool startImmediately = true)
         {
             AsyncOperationHandle handle = new AsyncOperationHandle(operation);
-            handle.SetCallbacks(
-                BindCallback(completed, handle.Id),
-                BindCallback(cancelled, handle.Id),
-                BindCallback(faulted,   handle.Id)
-            );
+            handle.Completed.Connect(() => RemoveHandle(handle.Id));
+            handle.Cancelled.Connect(() => RemoveHandle(handle.Id));
+            handle.Faulted.Connect(ex => RemoveHandle(handle.Id));
             _operationHandles.Add(handle.Id, handle);
 
             if (startImmediately)
@@ -33,30 +26,10 @@ namespace ADM87.GameUtilities.Async
             return handle;
         }
 
-        private IAsyncService.AsyncOperationCallback BindCallback(
-            IAsyncService.AsyncOperationCallback callback,
-            Guid id)
+        private void RemoveHandle(Guid id)
         {
-            return () =>
-            {
-                if (_operationHandles.TryGetValue(id, out AsyncOperationHandle handle))
-                    _operationHandles.Remove(id);
-
-                callback?.Invoke();
-            };
-        }
-
-        private IAsyncService.AsyncOperationExceptionCallback BindCallback(
-            IAsyncService.AsyncOperationExceptionCallback callback,
-            Guid id)
-        {
-            return (Exception exception) =>
-            {
-                if (_operationHandles.TryGetValue(id, out AsyncOperationHandle handle))
-                    _operationHandles.Remove(id);
-
-                callback?.Invoke(exception);
-            };
+            if (_operationHandles.ContainsKey(id))
+                _operationHandles.Remove(id);
         }
     }
 }
