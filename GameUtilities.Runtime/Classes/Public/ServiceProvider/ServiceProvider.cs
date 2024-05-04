@@ -30,35 +30,26 @@ namespace ADM87.GameUtilities.Services
                     if (attribute == null)
                         continue;
 
-                    AddService(attribute.IdentityType, type, attribute.IsSingleton);
+                    AddService(attribute.IdentityType, type, attribute.LifeTime);
                 }
+            }
+
+            // Create instances of singleton services.
+            foreach (ServiceDefinition definition in Collection.Values)
+            {
+                if (definition.ServiceLifeTime == EServiceLifeTime.Singleton)
+                    Get(definition.Identity);
             }
         }
 
-        /// <summary>
-        /// Adds a service to the service provider.
-        /// </summary>
-        /// <typeparam name="TIdentity">The type of the service identity.</typeparam>
-        /// <typeparam name="TImplementation">The type of the service implementation.</typeparam>
-        /// <param name="isSingleton">Indicates whether the service should be registered as a singleton (default is false).</param>
-        public static void AddService<TIdentity, TImplementation>(bool isSingleton = false)
+        public static void AddService<TIdentity, TImplementation>(EServiceLifeTime serviceLifeTime = EServiceLifeTime.Transient)
         {
-            AddService(typeof(TIdentity), typeof(TImplementation), isSingleton);
+            AddService(typeof(TIdentity), typeof(TImplementation), serviceLifeTime);
         }
 
-        /// <summary>
-        /// Adds a service to the service collection.
-        /// </summary>
-        /// <param name="identityType">The type of the service identity.</param>
-        /// <param name="implementationType">The type of the service implementation.</param>
-        /// <param name="isSingleton">A flag indicating whether the service should be treated as a singleton.</param>
-        /// <exception cref="InvalidServiceIdentityTypeException">Thrown when the <paramref name="identityType"/> is not an interface.</exception>
-        /// <exception cref="InvalidServiceImplementationException">Thrown when the <paramref name="implementationType"/> does not implement the <paramref name="identityType"/>.</exception>
-        /// <exception cref="DuplicateServiceIdentityException">Thrown when a service with the same <paramref name="identityType"/> already exists in the service collection.</exception>
-        /// <exception cref="DuplicateServiceImplementationException">Thrown when a service with the same <paramref name="implementationType"/> already exists in the service collection.</exception>
         public static void AddService(Type identityType,
                                       Type implementationType,
-                                      bool isSingleton)
+                                      EServiceLifeTime serviceLifeTime = EServiceLifeTime.Transient)
         {
             if (!identityType.IsInterface)
                 throw new InvalidServiceIdentityTypeException(identityType, implementationType);
@@ -79,7 +70,7 @@ namespace ADM87.GameUtilities.Services
                 Identity        = identityType,
                 Implementation  = implementationType,
                 Dependencies    = GetServiceDependencies(implementationType),
-                IsSingleton     = isSingleton
+                ServiceLifeTime   = serviceLifeTime
             });
 
             // Check for circular dependencies.
@@ -108,7 +99,7 @@ namespace ADM87.GameUtilities.Services
 
             object instance = Activator.CreateInstance(definition.Implementation);
 
-            if (definition.IsSingleton)
+            if (definition.ServiceLifeTime == EServiceLifeTime.Singleton)
                 definition.Instance = instance;
 
             foreach (PropertyInfo property in definition.Dependencies)
@@ -191,7 +182,7 @@ namespace ADM87.GameUtilities.Services
                 throw new CircularServiceDependencyException(dependencyChain);
 
             // If the definition is a singleton, we don't need to check its dependencies. Their instances are already created.
-            if (definition.IsSingleton)
+            if (definition.ServiceLifeTime == EServiceLifeTime.Singleton)
                 return;
 
             dependencyChain.Add(definition.Identity);

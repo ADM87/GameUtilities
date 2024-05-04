@@ -10,13 +10,13 @@ namespace ADM87.GameUtilities.Services
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class ServiceDefinitionAttribute : Attribute
     {
-        public Type IdentityType { get; private set; }
-        public bool IsSingleton { get; private set; }
+        public Type IdentityType { get; }
+        public EServiceLifeTime LifeTime { get; }
 
-        public ServiceDefinitionAttribute(Type identitiyType, bool isSingleton = false)
+        public ServiceDefinitionAttribute(Type identityType, EServiceLifeTime creationRule)
         {
-            IdentityType = identitiyType;
-            IsSingleton = isSingleton;
+            IdentityType = identityType;
+            LifeTime = creationRule;
         }
     }
 }

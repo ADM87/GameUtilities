@@ -18,11 +18,11 @@ namespace GameUtilities.Tests
             ServiceProvider.CollectServiceDefinitions();
             Assert.Multiple(() =>
             {
-                Assert.That(ServiceProvider.Collection,                                                        Is.Not.Empty);
-                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(ICollectedService)),                 Is.True);
-                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(ICollectedSingletonService)),        Is.True);
-                Assert.That(ServiceProvider.Collection[typeof(ICollectedService)].IsSingleton,                 Is.False);
-                Assert.That(ServiceProvider.Collection[typeof(ICollectedSingletonService)].IsSingleton,        Is.True);
+                Assert.That(ServiceProvider.Collection,                                                     Is.Not.Empty);
+                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(ICollectedService)),              Is.True);
+                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(ICollectedSingletonService)),     Is.True);
+                Assert.That(ServiceProvider.Collection[typeof(ICollectedService)].ServiceLifeTime,          Is.EqualTo(EServiceLifeTime.Transient));
+                Assert.That(ServiceProvider.Collection[typeof(ICollectedSingletonService)].ServiceLifeTime, Is.EqualTo(EServiceLifeTime.Singleton));
             });
         }
 
@@ -34,14 +34,14 @@ namespace GameUtilities.Tests
         {
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IManualService, ManualService>();
-            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(isSingleton: true);
+            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(EServiceLifeTime.Singleton);
             Assert.Multiple(() =>
             {
-                Assert.That(ServiceProvider.Collection,                                                    Is.Not.Empty);
-                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(IManualService)),                Is.True);
-                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(IManualSingletonService)),       Is.True);
-                Assert.That(ServiceProvider.Collection[typeof(IManualService)].IsSingleton,                Is.False);
-                Assert.That(ServiceProvider.Collection[typeof(IManualSingletonService)].IsSingleton,       Is.True);
+                Assert.That(ServiceProvider.Collection,                                                     Is.Not.Empty);
+                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(IManualService)),                 Is.True);
+                Assert.That(ServiceProvider.Collection.ContainsKey(typeof(IManualSingletonService)),        Is.True);
+                Assert.That(ServiceProvider.Collection[typeof(IManualService)].ServiceLifeTime,             Is.EqualTo(EServiceLifeTime.Transient));
+                Assert.That(ServiceProvider.Collection[typeof(IManualSingletonService)].ServiceLifeTime,    Is.EqualTo(EServiceLifeTime.Singleton));
             });
         }
 
@@ -71,7 +71,7 @@ namespace GameUtilities.Tests
         public static void PassGetSingletonServiceInstance()
         {
             ServiceProvider.Collection.Clear();
-            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(isSingleton: true);
+            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(EServiceLifeTime.Singleton);
             Assert.Multiple(() =>
             {
                 IManualSingletonService serviceA = ServiceProvider.Get<IManualSingletonService>();
@@ -106,7 +106,7 @@ namespace GameUtilities.Tests
         public static void PassGetServiceWithSingletonDependency()
         {
             ServiceProvider.Collection.Clear();
-            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(isSingleton: true);
+            ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(EServiceLifeTime.Singleton);
             ServiceProvider.AddService<IManualServiceWithSingletonDependency, ManualServiceWithSingletonDependency>();
             Assert.Multiple(() =>
             {
