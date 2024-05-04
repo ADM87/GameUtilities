@@ -101,11 +101,8 @@ namespace ADM87.GameUtilities.Services
         /// <inheritdoc />
         public void Cancel()
         {
-            if (_cancellationTokenSource.IsCancellationRequested)
-                throw new InvalidOperationException("Operation is already canceled.");
-
-            if (IsCompleted || IsCanceled || IsFailed)
-                throw new InvalidOperationException("Operation is already finished.");
+            if (_cancellationTokenSource.IsCancellationRequested || IsCompleted || IsCanceled || IsFailed)
+                return;
 
             _cancellationTokenSource.Cancel();
         }
