@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,12 +46,8 @@ namespace ADM87.GameUtilities.Services
                     runningTask.Add(handle.GetTask());
 
                 handle.Cancel();
-            }
-
-            Task.WaitAll(runningTask.ToArray());
-
-            foreach (AsyncOperationHandleBase handle in OperationHandles.Values)
                 handle.Dispose();
+            }
 
             OperationHandles.Clear();
         }
