@@ -1,4 +1,4 @@
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     using System;
 

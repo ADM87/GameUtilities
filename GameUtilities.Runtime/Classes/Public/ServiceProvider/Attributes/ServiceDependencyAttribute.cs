@@ -1,6 +1,6 @@
 using System;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Represents an attribute that marks a property as a dependency on a service.

@@ -1,4 +1,4 @@
-using ADM87.GameUtilities.ServiceProvider;
+using ADM87.GameUtilities.Services;
 
 namespace GameUtilities.Tests
 {
@@ -14,9 +14,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceIdentitiy()
         {
-            Services.Collection.Clear();
+            ServiceProvider.Collection.Clear();
             Assert.Throws<InvalidServiceIdentityTypeException>(() => {
-                Services.AddService<IInvalidServiceIdentityType, InvalidServiceIdentityType>();
+                ServiceProvider.AddService<IInvalidServiceIdentityType, InvalidServiceIdentityType>();
             });
         }
 
@@ -26,9 +26,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceImplementation()
         {
-            Services.Collection.Clear();
+            ServiceProvider.Collection.Clear();
             Assert.Throws<InvalidServiceImplementationException>(() => {
-                Services.AddService<IInvalidServiceImplementationType, InvalidServiceImplementationType>();
+                ServiceProvider.AddService<IInvalidServiceImplementationType, InvalidServiceImplementationType>();
             });
         }
 
@@ -38,10 +38,10 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailDuplicateServiceIdentity()
         {
-            Services.Collection.Clear();
-            Services.AddService<IDuplicateIdentityType, DuplicateIdentityTypeA>();
+            ServiceProvider.Collection.Clear();
+            ServiceProvider.AddService<IDuplicateIdentityType, DuplicateIdentityTypeA>();
             Assert.Throws<DuplicateServiceIdentityException>(() => {
-                Services.AddService<IDuplicateIdentityType, DuplicateIdentitiyTypeB>();
+                ServiceProvider.AddService<IDuplicateIdentityType, DuplicateIdentitiyTypeB>();
             });
         }
 
@@ -51,10 +51,10 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailDuplicateServiceImplementation()
         {
-            Services.Collection.Clear();
-            Services.AddService<IDuplicateImplementationTypeA, DuplicateImplementationType>();
+            ServiceProvider.Collection.Clear();
+            ServiceProvider.AddService<IDuplicateImplementationTypeA, DuplicateImplementationType>();
             Assert.Throws<DuplicateServiceImplementationException>(() => {
-                Services.AddService<IDuplicateImplementationTypeB, DuplicateImplementationType>();
+                ServiceProvider.AddService<IDuplicateImplementationTypeB, DuplicateImplementationType>();
             });
         }
 
@@ -64,9 +64,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailMissingPrivateDependencySetter()
         {
-            Services.Collection.Clear();
+            ServiceProvider.Collection.Clear();
             Assert.Throws<MissingServiceDependencySetterException>(() => {
-                Services.AddService<IMissingPrivateDependencySetter, MissingPrivateDependencySetter>();
+                ServiceProvider.AddService<IMissingPrivateDependencySetter, MissingPrivateDependencySetter>();
             });
         }
 
@@ -76,9 +76,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceDependencyType()
         {
-            Services.Collection.Clear();
+            ServiceProvider.Collection.Clear();
             Assert.Throws<InvalidServiceDependencyTypeException>(() => {
-                Services.AddService<IInvalidServiceDependencyType, InvalidServiceDependencyType>();
+                ServiceProvider.AddService<IInvalidServiceDependencyType, InvalidServiceDependencyType>();
             });
         }
 
@@ -88,8 +88,8 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailServiceNotFound()
         {
-            Services.Collection.Clear();
-            Assert.Throws<ServiceNotFoundException>(() => Services.Get<ITestService>());
+            ServiceProvider.Collection.Clear();
+            Assert.Throws<ServiceNotFoundException>(() => ServiceProvider.Get<ITestService>());
         }
 
         /// <summary>
@@ -98,20 +98,20 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailCircularDependency()
         {
-            Services.Collection.Clear();
-            Services.AddService<ICircularDependencyA, CircularDependencyA>();
+            ServiceProvider.Collection.Clear();
+            ServiceProvider.AddService<ICircularDependencyA, CircularDependencyA>();
             Assert.Multiple(() => {
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    Services.AddService<ICircularDependencyB, CircularDependencyB>();
+                    ServiceProvider.AddService<ICircularDependencyB, CircularDependencyB>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    Services.AddService<ICircularDependencyC, CircularDependencyC>();
+                    ServiceProvider.AddService<ICircularDependencyC, CircularDependencyC>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    Services.AddService<ICircularDependencyD, CircularDependencyD>();
+                    ServiceProvider.AddService<ICircularDependencyD, CircularDependencyD>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    Services.AddService<ICircularDependencyE, CircularDependencyE>();
+                    ServiceProvider.AddService<ICircularDependencyE, CircularDependencyE>();
                 });
             });
         }

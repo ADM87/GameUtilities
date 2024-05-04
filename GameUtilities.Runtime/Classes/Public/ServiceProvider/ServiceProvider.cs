@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     using ServiceCollection = Dictionary<Type, ServiceDefinition>;
 
     /// <summary>
     /// Provides a collection of services and methods for managing and retrieving them.
     /// </summary>
-    public static class Services
+    public static class ServiceProvider
     {
         internal static ServiceCollection Collection { get; } = new ServiceCollection();
 

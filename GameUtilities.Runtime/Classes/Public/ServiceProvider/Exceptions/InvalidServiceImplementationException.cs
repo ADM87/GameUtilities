@@ -1,6 +1,6 @@
 using System;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Represents an exception that is thrown when a service implementation does not implement the required identity type.

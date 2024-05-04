@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Represents an exception that is thrown when a service dependency is of an invalid type.
