@@ -295,5 +295,25 @@ namespace GameUtilities.Tests
                 Assert.That(AsyncOperationService.OperationHandles, Is.Empty);
             });
         }
+
+        [Test, Order(12)]
+        public void PassAsyncOpServiceDispose()
+        {
+            ServiceProvider.Collection.Clear();
+            ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
+
+            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
+
+            asyncOpService.Dispose();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(asyncOpHandle.IsCompleted,              Is.False);
+                Assert.That(asyncOpHandle.IsCanceled,               Is.True);
+                Assert.That(asyncOpHandle.IsFailed,                 Is.False);
+                Assert.That(AsyncOperationService.OperationHandles, Is.Empty);
+            });
+        }
     }
 }
