@@ -2,6 +2,12 @@ using ADM87.GameUtilities.Services;
 
 namespace GameUtilities.Tests
 {
+    public class InjectionTarget
+    {
+        [ServiceDependency]
+        public ICollectedService CollectedService { get; private set; }
+    }
+
     public interface ICollectedService {}
     [ServiceDefinition(typeof(ICollectedService))]
     public class CollectedService : ICollectedService {}

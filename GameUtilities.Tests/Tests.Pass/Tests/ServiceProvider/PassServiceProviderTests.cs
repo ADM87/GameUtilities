@@ -117,5 +117,19 @@ namespace GameUtilities.Tests
                 Assert.That(serviceA.ASingletonManualService, Is.EqualTo(serviceB.ASingletonManualService));
             });
         }
+
+        [Test, Order(7)]
+        public static void PassServiceDependencyInjection()
+        {
+            ServiceProvider.Collection.Clear();
+            ServiceProvider.AddService<ICollectedService, CollectedService>();
+            InjectionTarget target = new InjectionTarget();
+            ServiceProvider.InjectDependencies(target);
+            Assert.Multiple(() =>
+            {
+                Assert.That(target.CollectedService, Is.Not.Null);
+                Assert.That(target.CollectedService, Is.TypeOf<CollectedService>());
+            });
+        }
     }
 }
