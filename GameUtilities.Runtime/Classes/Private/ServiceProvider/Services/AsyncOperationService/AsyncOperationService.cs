@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ADM87.GameUtilities.Services;
 
 namespace ADM87.GameUtilities.Services
 {
     using AsyncOperationHandles = Dictionary<Guid, AsyncOperationHandleBase>;
 
-    [ServiceDefinition(typeof(IAsyncOperationService), isSingleton: true)]
+    [ServiceDefinition(typeof(IAsyncOperationService), EServiceLifeTime.Singleton)]
     internal class AsyncOperationService : IAsyncOperationService
     {
         /// <summary> A record of active operation handles. </summary>

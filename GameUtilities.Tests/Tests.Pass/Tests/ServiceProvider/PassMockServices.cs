@@ -9,18 +9,18 @@ namespace GameUtilities.Tests
     }
 
     public interface ICollectedService {}
-    [ServiceDefinition(typeof(ICollectedService))]
+    [ServiceDefinition(typeof(ICollectedService), EServiceLifeTime.Transient)]
     public class CollectedService : ICollectedService {}
 
     public interface ICollectedSingletonService {}
-    [ServiceDefinition(typeof(ICollectedSingletonService), isSingleton: true)]
+    [ServiceDefinition(typeof(ICollectedSingletonService), EServiceLifeTime.Singleton)]
     public class CollectedSingletonService : ICollectedSingletonService {}
 
     public interface ICollectedServiceWithDependency
     {
         ICollectedService ASimpleCollectedService { get; }
     }
-    [ServiceDefinition(typeof(ICollectedServiceWithDependency))]
+    [ServiceDefinition(typeof(ICollectedServiceWithDependency), EServiceLifeTime.Transient)]
     public class CollectedServiceWithDependency : ICollectedServiceWithDependency
     {
         [ServiceDependency]
