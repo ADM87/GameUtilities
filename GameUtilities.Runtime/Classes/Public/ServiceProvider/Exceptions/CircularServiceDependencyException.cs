@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Represents an exception that is thrown when circular dependencies are detected in a service dependency chain.

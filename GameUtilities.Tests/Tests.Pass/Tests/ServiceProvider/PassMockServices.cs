@@ -1,4 +1,4 @@
-using ADM87.GameUtilities.ServiceProvider;
+using ADM87.GameUtilities.Services;
 
 namespace GameUtilities.Tests
 {

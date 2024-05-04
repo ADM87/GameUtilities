@@ -1,6 +1,6 @@
 using System;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Defines an implementation for the provided service identity.

@@ -1,6 +1,6 @@
 using System;
 
-namespace ADM87.GameUtilities.ServiceProvider
+namespace ADM87.GameUtilities.Services
 {
     /// <summary>
     /// Represents an exception that is thrown when duplicate service identities are detected.

@@ -47,7 +47,7 @@ namespace ADM87.GameUtilities.Signals
         /// Checks if the signal has any subscribers.
         /// </summary>
         /// <returns></returns>
-        public bool HasSubscribers()
+        public bool HasConnections()
         {
             return _callbacks != null;
         }
