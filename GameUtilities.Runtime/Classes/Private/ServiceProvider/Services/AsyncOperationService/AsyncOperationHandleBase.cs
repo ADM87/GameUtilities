@@ -84,6 +84,7 @@ namespace ADM87.GameUtilities.Services
         internal virtual void Dispose()
         {
             _cancellationTokenSource.Dispose();
+            CleanUp();
         }
 
         /// <summary> Cleans up the operation. </summary>
