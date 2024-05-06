@@ -10,7 +10,7 @@ namespace GameUtilities.Tests
         {
             ServiceProvider.CollectServiceDefinitions();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
 
             Assert.Multiple(() =>
             {
@@ -25,7 +25,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
 
             // Simulate an update loop that updates the async operation service.
@@ -49,7 +49,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
 
             asyncOpHandle.Cancel();
@@ -75,7 +75,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
 
             bool completed = false;
@@ -103,7 +103,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
 
             bool canceled = false;
@@ -133,7 +133,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.FromException(new Exception("Test exception.")));
 
             bool failed = false;
@@ -161,7 +161,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle<int> asyncOpHandle = asyncOpService.RunAsync(token => Task.FromResult(42));
 
             // Simulate an update loop that updates the async operation service.
@@ -186,7 +186,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle<int> asyncOpHandle = asyncOpService.RunAsync(token => Task.FromResult(42));
 
             asyncOpHandle.Cancel();
@@ -213,7 +213,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle<int> asyncOpHandle = asyncOpService.RunAsync(token => Task.FromResult(42));
 
             bool completed = false;
@@ -242,7 +242,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle<int> asyncOpHandle = asyncOpService.RunAsync(token => Task.FromResult(42));
 
             bool canceled = false;
@@ -273,7 +273,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle<int> asyncOpHandle = asyncOpService.RunAsync(token => Task.FromException<int>(new Exception("Test exception.")));
 
             bool failed = false;
@@ -302,7 +302,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<IAsyncOperationService, AsyncOperationService>();
 
-            IAsyncOperationService asyncOpService = ServiceProvider.Get<IAsyncOperationService>();
+            IAsyncOperationService asyncOpService = ServiceProvider.GetService<IAsyncOperationService>();
             IAsyncOperationHandle asyncOpHandle = asyncOpService.RunAsync((token) => Task.Delay(1000, token));
 
             asyncOpService.Dispose();

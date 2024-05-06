@@ -38,15 +38,31 @@ namespace ADM87.GameUtilities.Services
             foreach (ServiceDefinition definition in Collection.Values)
             {
                 if (definition.ServiceLifeTime == EServiceLifeTime.Singleton)
-                    Get(definition.Identity);
+                    GetService(definition.Identity);
             }
         }
 
+        /// <summary>
+        /// Adds a service to the service provider.
+        /// </summary>
+        /// <typeparam name="TIdentity"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
+        /// <param name="serviceLifeTime"></param>
         public static void AddService<TIdentity, TImplementation>(EServiceLifeTime serviceLifeTime = EServiceLifeTime.Transient)
         {
             AddService(typeof(TIdentity), typeof(TImplementation), serviceLifeTime);
         }
 
+        /// <summary>
+        /// Adds a service to the service provider.
+        /// </summary>
+        /// <param name="identityType"></param>
+        /// <param name="implementationType"></param>
+        /// <param name="serviceLifeTime"></param>
+        /// <exception cref="InvalidServiceIdentityTypeException"></exception>
+        /// <exception cref="InvalidServiceImplementationException"></exception>
+        /// <exception cref="DuplicateServiceIdentityException"></exception>
+        /// <exception cref="DuplicateServiceImplementationException"></exception>
         public static void AddService(Type identityType,
                                       Type implementationType,
                                       EServiceLifeTime serviceLifeTime = EServiceLifeTime.Transient)
@@ -78,19 +94,35 @@ namespace ADM87.GameUtilities.Services
         }
 
         /// <summary>
+        /// Determines if the service provider contains a service of the specified type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static bool HasService<T>()
+            => HasService(typeof(T));
+
+        /// <summary>
+        /// Determines if the service provider contains a service of the specified type.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool HasService(Type type)
+            => Collection.ContainsKey(type);
+
+        /// <summary>
         /// Gets an instance of the specified type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the instance to retrieve.</typeparam>
         /// <returns>An instance of the specified type <typeparamref name="T"/>.</returns>
-        public static T Get<T>()
-            => (T)Get(typeof(T));
+        public static T GetService<T>()
+            => (T)GetService(typeof(T));
 
         /// <summary>
         /// Retrieves an instance of the specified type from the service provider.
         /// </summary>
         /// <param name="type">The type of the instance to retrieve.</param>
         /// <returns>An instance of the specified type.</returns>
-        public static object Get(Type type)
+        public static object GetService(Type type)
         {
             ServiceDefinition definition = GetServiceDefinition(type);
 
@@ -103,7 +135,7 @@ namespace ADM87.GameUtilities.Services
                 definition.Instance = instance;
 
             foreach (PropertyInfo property in definition.Dependencies)
-                property.SetValue(instance, Get(property.PropertyType));
+                property.SetValue(instance, GetService(property.PropertyType));
 
             return instance;
         }
@@ -116,7 +148,7 @@ namespace ADM87.GameUtilities.Services
         {
             IEnumerable<PropertyInfo> properties = GetServiceDependencies(target.GetType());
             foreach (PropertyInfo property in properties)
-                property.SetValue(target, Get(property.PropertyType));
+                property.SetValue(target, GetService(property.PropertyType));
         }
 
         /// <summary>

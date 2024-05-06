@@ -55,11 +55,11 @@ namespace GameUtilities.Tests
             ServiceProvider.AddService<IManualService, ManualService>();
             Assert.Multiple(() =>
             {
-                IManualService serviceA = ServiceProvider.Get<IManualService>();
+                IManualService serviceA = ServiceProvider.GetService<IManualService>();
                 Assert.That(serviceA, Is.Not.Null);
                 Assert.That(serviceA, Is.TypeOf<ManualService>());
 
-                IManualService serviceB = ServiceProvider.Get<IManualService>();
+                IManualService serviceB = ServiceProvider.GetService<IManualService>();
                 Assert.That(serviceA, Is.Not.EqualTo(serviceB));
             });
         }
@@ -74,11 +74,11 @@ namespace GameUtilities.Tests
             ServiceProvider.AddService<IManualSingletonService, ManualSingletonService>(EServiceLifeTime.Singleton);
             Assert.Multiple(() =>
             {
-                IManualSingletonService serviceA = ServiceProvider.Get<IManualSingletonService>();
+                IManualSingletonService serviceA = ServiceProvider.GetService<IManualSingletonService>();
                 Assert.That(serviceA, Is.Not.Null);
                 Assert.That(serviceA, Is.TypeOf<ManualSingletonService>());
 
-                IManualSingletonService serviceB = ServiceProvider.Get<IManualSingletonService>();
+                IManualSingletonService serviceB = ServiceProvider.GetService<IManualSingletonService>();
                 Assert.That(serviceA, Is.EqualTo(serviceB));
             });
         }
@@ -94,7 +94,7 @@ namespace GameUtilities.Tests
             ServiceProvider.AddService<IManualServiceWithDependency, ManualServiceWithDependency>();
             Assert.Multiple(() =>
             {
-                IManualServiceWithDependency service = ServiceProvider.Get<IManualServiceWithDependency>();
+                IManualServiceWithDependency service = ServiceProvider.GetService<IManualServiceWithDependency>();
                 Assert.That(service.ASimpleManualService, Is.TypeOf<ManualService>());
             });
         }
@@ -110,10 +110,10 @@ namespace GameUtilities.Tests
             ServiceProvider.AddService<IManualServiceWithSingletonDependency, ManualServiceWithSingletonDependency>();
             Assert.Multiple(() =>
             {
-                IManualServiceWithSingletonDependency serviceA = ServiceProvider.Get<IManualServiceWithSingletonDependency>();
+                IManualServiceWithSingletonDependency serviceA = ServiceProvider.GetService<IManualServiceWithSingletonDependency>();
                 Assert.That(serviceA.ASingletonManualService, Is.TypeOf<ManualSingletonService>());
 
-                IManualServiceWithSingletonDependency serviceB = ServiceProvider.Get<IManualServiceWithSingletonDependency>();
+                IManualServiceWithSingletonDependency serviceB = ServiceProvider.GetService<IManualServiceWithSingletonDependency>();
                 Assert.That(serviceA.ASingletonManualService, Is.EqualTo(serviceB.ASingletonManualService));
             });
         }

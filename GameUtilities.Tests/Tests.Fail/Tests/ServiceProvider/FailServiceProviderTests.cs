@@ -89,7 +89,7 @@ namespace GameUtilities.Tests
         public static void FailServiceNotFound()
         {
             ServiceProvider.Collection.Clear();
-            Assert.Throws<ServiceNotFoundException>(() => ServiceProvider.Get<ITestService>());
+            Assert.Throws<ServiceNotFoundException>(() => ServiceProvider.GetService<ITestService>());
         }
 
         /// <summary>
