@@ -21,26 +21,26 @@ namespace GameUtilities.Tests
         }
 
         [Test, Order(1)]
-        public void PassMessagingServiceRegistersReceiver()
+        public void PassMessagingServiceRegistersConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
 
-            PassMessagingMocks.TestReceiver receiver = new PassMessagingMocks.TestReceiver();
-            messagingService.RegisterReceiver(receiver);
+            PassMessagingMocks.TestConsumer consumer = new PassMessagingMocks.TestConsumer();
+            messagingService.AddConsumer(consumer);
 
-            Assert.That(messagingService.HasReceiver(receiver), Is.True);
+            Assert.That(messagingService.HasConsumer(consumer), Is.True);
         }
 
         [Test, Order(2)]
-        public void PassMessagingServiceUnregistersReceiver()
+        public void PassMessagingServiceUnregistersConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
 
-            PassMessagingMocks.TestReceiver receiver = new PassMessagingMocks.TestReceiver();
-            messagingService.RegisterReceiver(receiver);
-            messagingService.UnregisterReceiver(receiver);
+            PassMessagingMocks.TestConsumer consumer = new PassMessagingMocks.TestConsumer();
+            messagingService.AddConsumer(consumer);
+            messagingService.RemoveConsumer(consumer);
 
-            Assert.That(messagingService.HasReceiver(receiver), Is.False);
+            Assert.That(messagingService.HasConsumer(consumer), Is.False);
         }
 
         [Test, Order(3)]
@@ -48,78 +48,78 @@ namespace GameUtilities.Tests
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
 
-            PassMessagingMocks.TestReceiver receiver = new PassMessagingMocks.TestReceiver();
-            messagingService.RegisterReceiver(receiver);
+            PassMessagingMocks.TestConsumer consumer = new PassMessagingMocks.TestConsumer();
+            messagingService.AddConsumer(consumer);
 
             PassMessagingMocks.ITestMessage message = new PassMessagingMocks.TestMessage("Test Message");
-            messagingService.SendMessage(message);
+            messagingService.Send(message);
 
             Assert.Multiple(() =>
             {
-                Assert.That(receiver.ReceivedMessage, Is.True);
-                Assert.That(receiver.LastMessage, Is.EqualTo(message));
+                Assert.That(consumer.ReceivedMessage, Is.True);
+                Assert.That(consumer.LastMessage, Is.EqualTo(message));
             });
         }
 
         [Test, Order(4)]
-        public void PassMessagingServiceThrowsOnNullReceiver()
+        public void PassMessagingServiceThrowsOnNullConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
 
             Assert.Multiple(() =>
             {
-                Assert.That(() => messagingService.RegisterReceiver(null), Throws.ArgumentNullException);
-                Assert.That(() => messagingService.UnregisterReceiver(null), Throws.ArgumentNullException);
-                Assert.That(() => messagingService.HasReceiver(null), Throws.ArgumentNullException);
+                Assert.That(() => messagingService.AddConsumer(null), Throws.ArgumentNullException);
+                Assert.That(() => messagingService.RemoveConsumer(null), Throws.ArgumentNullException);
+                Assert.That(() => messagingService.HasConsumer(null), Throws.ArgumentNullException);
             });
         }
 
         [Test, Order(5)]
-        public void PassMessagingServiceThrowsOnDuplicateReceiver()
+        public void PassMessagingServiceThrowsOnDuplicateConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
 
-            PassMessagingMocks.TestReceiver receiver = new PassMessagingMocks.TestReceiver();
-            messagingService.RegisterReceiver(receiver);
+            PassMessagingMocks.TestConsumer consumer = new PassMessagingMocks.TestConsumer();
+            messagingService.AddConsumer(consumer);
 
-            Assert.That(() => messagingService.RegisterReceiver(receiver), Throws.InvalidOperationException);
+            Assert.That(() => messagingService.AddConsumer(consumer), Throws.InvalidOperationException);
         }
 
         [Test, Order(6)]
-        public void PassMessagingServiceThrowsOnUnregisteredReceiver()
+        public void PassMessagingServiceThrowsOnUnregisteredConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
-            PassMessagingMocks.TestReceiver receiver = new PassMessagingMocks.TestReceiver();
+            PassMessagingMocks.TestConsumer consumer = new PassMessagingMocks.TestConsumer();
 
-            Assert.That(() => messagingService.UnregisterReceiver(receiver), Throws.InvalidOperationException);
+            Assert.That(() => messagingService.RemoveConsumer(consumer), Throws.InvalidOperationException);
         }
 
         [Test, Order(7)]
         public void PassMessagingServiceThrowsOnNullMessage()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
-            Assert.That(() => messagingService.SendMessage(null), Throws.ArgumentNullException);
+            Assert.That(() => messagingService.Send(null), Throws.ArgumentNullException);
         }
 
         [Test, Order(8)]
-        public void PassMessagingServiceThrowsOnNullReceiverForHasReceiver()
+        public void PassMessagingServiceThrowsOnNullConsumerForHasConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
-            Assert.That(() => messagingService.HasReceiver(null), Throws.ArgumentNullException);
+            Assert.That(() => messagingService.HasConsumer(null), Throws.ArgumentNullException);
         }
 
         [Test, Order(9)]
-        public void PassMessagingServiceThrowsOnNullMessageConsumerForRegisterReceiver()
+        public void PassMessagingServiceThrowsOnNullMessageConsumerForRegisterConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
-            Assert.That(() => messagingService.RegisterReceiver(null), Throws.ArgumentNullException);
+            Assert.That(() => messagingService.AddConsumer(null), Throws.ArgumentNullException);
         }
 
         [Test, Order(10)]
-        public void PassMessagingServiceThrowsOnNullMessageConsumerForUnregisterReceiver()
+        public void PassMessagingServiceThrowsOnNullMessageConsumerForUnregisterConsumer()
         {
             IMessagingService<PassMessagingMocks.ITestMessage> messagingService = ServiceProvider.GetService<IMessagingService<PassMessagingMocks.ITestMessage>>();
-            Assert.That(() => messagingService.UnregisterReceiver(null), Throws.ArgumentNullException);
+            Assert.That(() => messagingService.RemoveConsumer(null), Throws.ArgumentNullException);
         }
     }
 }

@@ -6,51 +6,51 @@ namespace ADM87.GameUtilities.Messaging
     internal class MessagingService<T> : IMessagingService<T> where T : IMessage
     {
         /// <summary>
-        /// The receivers that are registered to receive messages.
+        /// The consumers that are registered to receive messages.
         /// </summary>
-        private readonly HashSet<IMessageConsumer<T>> _receivers = new HashSet<IMessageConsumer<T>>();
+        private readonly HashSet<IMessageConsumer<T>> _consumers = new HashSet<IMessageConsumer<T>>();
 
         /// <inheritdoc/>
-        public void RegisterReceiver(IMessageConsumer<T> receiver)
+        public void AddConsumer(IMessageConsumer<T> consumer)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+            if (consumer == null)
+                throw new ArgumentNullException(nameof(consumer));
 
-            if (_receivers.Contains(receiver))
-                throw new InvalidOperationException("Receiver is already registered.");
+            if (_consumers.Contains(consumer))
+                throw new InvalidOperationException("Consumer is already registered.");
 
-            _receivers.Add(receiver);
+            _consumers.Add(consumer);
         }
 
         /// <inheritdoc/>
-        public void UnregisterReceiver(IMessageConsumer<T> receiver)
+        public void RemoveConsumer(IMessageConsumer<T> consumer)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+            if (consumer == null)
+                throw new ArgumentNullException(nameof(consumer));
 
-            if (!_receivers.Contains(receiver))
-                throw new InvalidOperationException("Receiver is not registered.");
+            if (!_consumers.Contains(consumer))
+                throw new InvalidOperationException("Consumer is not registered.");
 
-            _receivers.Remove(receiver);
+            _consumers.Remove(consumer);
         }
 
         /// <inheritdoc/>
-        public void SendMessage(T message)
+        public void Send(T message)
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
 
-            foreach (var receiver in _receivers)
-                receiver.ConsumeMessage(message);
+            foreach (var consumer in _consumers)
+                consumer.ConsumeMessage(message);
         }
 
         /// <inheritdoc/>
-        public bool HasReceiver(IMessageConsumer<T> receiver)
+        public bool HasConsumer(IMessageConsumer<T> consumer)
         {
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+            if (consumer == null)
+                throw new ArgumentNullException(nameof(consumer));
 
-            return _receivers.Contains(receiver);
+            return _consumers.Contains(consumer);
         }
     }
 }
