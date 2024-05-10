@@ -20,7 +20,7 @@ namespace GameUtilities.Tests
             }
         }
 
-        public class TestReceiver : IMessageConsumer<ITestMessage>
+        public class TestConsumer : IMessageConsumer<ITestMessage>
         {
             public ITestMessage LastMessage { get; private set; }
             public bool ReceivedMessage => LastMessage != null;

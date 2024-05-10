@@ -7,25 +7,25 @@ namespace ADM87.GameUtilities.Messaging
     public interface IMessagingService<T> where T : IMessage
     {
         /// <summary>
-        /// Registers a receiver to receive messages.
+        /// Adds a consumer to receive messages.
         /// </summary>
-        /// <param name="receiver"></param>
-        void RegisterReceiver(IMessageConsumer<T> receiver);
+        /// <param name="consumer"></param>
+        void AddConsumer(IMessageConsumer<T> consumer);
         /// <summary>
-        /// Unregisters a receiver from receiving messages.
+        /// Removes a consumer from receiving messages.
         /// </summary>
-        /// <param name="receiver"></param>
-        void UnregisterReceiver(IMessageConsumer<T> receiver);
+        /// <param name="consumer"></param>
+        void RemoveConsumer(IMessageConsumer<T> consumer);
         /// <summary>
-        /// Sends a message to all registered receivers.
+        /// Sends a message to all registered consumers.
         /// </summary>
         /// <param name="message"></param>
-        void SendMessage(T message);
+        void Send(T message);
         /// <summary>
-        /// Checks if a receiver is registered.
+        /// Checks if a consumer is registered.
         /// </summary>
-        /// <param name="receiver"></param>
+        /// <param name="consumer"></param>
         /// <returns></returns>
-        bool HasReceiver(IMessageConsumer<T> receiver);
+        bool HasConsumer(IMessageConsumer<T> consumer);
     }
 }
