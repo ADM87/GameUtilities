@@ -18,7 +18,7 @@ namespace ADM87.GameUtilities.Services
         /// <inheritdoc />
         public Signal OnCanceled                 { get; private set; }
         /// <inheritdoc />
-        public Signal1<Exception> OnFailed       { get; private set; }
+        public Signal<Exception> OnFailed       { get; private set; }
 
         /// <inheritdoc />
         public bool IsPending => GetTask() == null;
@@ -77,7 +77,7 @@ namespace ADM87.GameUtilities.Services
             _cancellationTokenSource = new CancellationTokenSource();
 
             OnCanceled  = new Signal(SignalLock);
-            OnFailed    = new Signal1<Exception>(SignalLock);
+            OnFailed    = new Signal<Exception>(SignalLock);
         }
 
         /// <summary> Disposes the operation. </summary>

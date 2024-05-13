@@ -7,7 +7,7 @@ namespace ADM87.GameUtilities.Observables
     /// Represents a value that can be observed for changes.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Observable<T> : Signal1<T>
+    public class Observable<T> : Signal<T>
     {
         /// <summary>
         /// The value of the observable.

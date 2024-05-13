@@ -13,7 +13,7 @@ namespace ADM87.GameUtilities.Services
         /// <inheritdoc />
         public T Result => IsCompleted ? OperationTask.Result : default;
         /// <inheritdoc />
-        public Signal1<T> OnCompleted { get; private set; }
+        public Signal<T> OnCompleted { get; private set; }
         /// <inheritdoc />
         public Task<T> OperationTask { get; private set; }
 
@@ -23,7 +23,7 @@ namespace ADM87.GameUtilities.Services
         {
             _operation = operation;
 
-            OnCompleted = new Signal1<T>(SignalLock);
+            OnCompleted = new Signal<T>(SignalLock);
         }
 
         /// <inheritdoc />

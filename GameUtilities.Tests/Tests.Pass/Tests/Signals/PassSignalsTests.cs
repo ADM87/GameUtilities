@@ -25,7 +25,7 @@ namespace GameUtilities.Tests
         [Test, Order(2)]
         public void PassSignalEmitWithParameter()
         {
-            Signal1<int> signal = new Signal1<int>();
+            Signal<int> signal = new Signal<int>();
             signal.Connect(value => Assert.That(value, Is.EqualTo(10)));
             signal.Emit(10);
         }
