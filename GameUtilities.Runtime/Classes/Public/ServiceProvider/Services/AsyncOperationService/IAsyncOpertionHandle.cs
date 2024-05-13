@@ -12,7 +12,7 @@ namespace ADM87.GameUtilities.Services
         /// <summary> Emits when the operation is canceled. </summary>
         Signal OnCanceled { get; }
         /// <summary> Emits when the operation has failed. </summary>
-        Signal1<Exception> OnFailed { get; }
+        Signal<Exception> OnFailed { get; }
         /// <summary> Whether the operation has started. </summary>
         bool IsPending { get; }
         /// <summary> Whether the operation is running. </summary>
@@ -47,7 +47,7 @@ namespace ADM87.GameUtilities.Services
         /// <summary> Result of the operation. </summary>
         T Result { get; }
         /// <summary> Emits when the operation is completed. </summary>
-        Signal1<T> OnCompleted { get; }
+        Signal<T> OnCompleted { get; }
         /// <summary> Task running the operation. </summary>
         Task<T> OperationTask  { get; }
 

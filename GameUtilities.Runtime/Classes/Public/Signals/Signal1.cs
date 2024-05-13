@@ -6,15 +6,15 @@ namespace ADM87.GameUtilities.Signals
     /// Represents a signal that can be invoked with one argument.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Signal1<T> : SignalBase
+    public class Signal<T> : SignalBase
     {
         /// <summary>
         /// The callbacks subscribed to the signal.
         /// </summary>
         private event Action<T> _callbacks;
 
-        public Signal1()            : base()    {}
-        public Signal1(Guid key)    : base(key) {}
+        public Signal()            : base()    {}
+        public Signal(Guid key)    : base(key) {}
 
         /// <summary>
         /// Connect to the signal.
