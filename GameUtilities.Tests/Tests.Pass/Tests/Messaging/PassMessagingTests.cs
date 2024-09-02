@@ -17,6 +17,9 @@ namespace GameUtilities.Tests
             {
                 Assert.That(messagingService, Is.Not.Null);
                 Assert.That(messagingService, Is.TypeOf<MessagingService<PassMessagingMocks.ITestMessage>>());
+                
+                messagingService = MessageRegistry.GetMessagingService<PassMessagingMocks.ITestMessage>();
+                Assert.That(messagingService, Is.Not.Null);
             });
         }
 
