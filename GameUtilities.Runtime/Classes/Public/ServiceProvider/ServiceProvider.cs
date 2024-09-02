@@ -49,9 +49,7 @@ namespace ADM87.GameUtilities.Services
         /// <typeparam name="TImplementation"></typeparam>
         /// <param name="serviceLifeTime"></param>
         public static void AddService<TIdentity, TImplementation>(EServiceLifeTime serviceLifeTime = EServiceLifeTime.Transient)
-        {
-            AddService(typeof(TIdentity), typeof(TImplementation), serviceLifeTime);
-        }
+            => AddService(typeof(TIdentity), typeof(TImplementation), serviceLifeTime);
 
         /// <summary>
         /// Adds a service to the service provider.
