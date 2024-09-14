@@ -5,7 +5,7 @@ namespace ADM87.GameUtilities.Messaging
     public static class MessageRegistry
     {
         /// <summary>
-        /// Registers an IMessagingService with the ServiceProvider.
+        /// Registers an IMessagingService with the ServiceLocator.
         /// </summary>
         /// <remarks>
         /// <typeparamref name="T"/> must be an interface type that derives from IMessage.
@@ -15,11 +15,11 @@ namespace ADM87.GameUtilities.Messaging
         /// <returns>An instance of the registered IMessagingService.</returns>
         public static IMessagingService<T> RegisterMessagingService<T>(EServiceLifeTime messagingServiceLifeTime = EServiceLifeTime.Transient) where T : IMessage
         {
-            ServiceProvider.AddService<IMessagingService<T>, MessagingService<T>>(messagingServiceLifeTime);
+            ServiceLocator.AddService<IMessagingService<T>, MessagingService<T>>(messagingServiceLifeTime);
             return GetMessagingService<T>();
         }
         /// <summary>
-        /// Gets an IMessagingService from the ServiceProvider.
+        /// Gets an IMessagingService from the ServiceLocator.
         /// </summary>
         /// <remarks>
         /// <typeparamref name="T"/> must be an interface type that derives from IMessage.
@@ -28,7 +28,7 @@ namespace ADM87.GameUtilities.Messaging
         /// <returns></returns>
         public static IMessagingService<T> GetMessagingService<T>() where T : IMessage
         {
-            return ServiceProvider.GetService<IMessagingService<T>>();
+            return ServiceLocator.GetService<IMessagingService<T>>();
         }
     }
 }

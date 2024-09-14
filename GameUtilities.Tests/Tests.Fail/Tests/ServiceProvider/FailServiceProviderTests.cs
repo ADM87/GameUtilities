@@ -3,10 +3,10 @@ using ADM87.GameUtilities.Services;
 namespace GameUtilities.Tests
 {
     /// <summary>
-    /// Contains test methods to verify the failure scenarios of the service provider.
+    /// Contains test methods to verify the failure scenarios of the service locator.
     /// </summary>
     [TestFixture]
-    public static class FailServiceProviderTests
+    public static class FailServiceLocatorTests
     {
         /// <summary>
         /// Test method to verify the failure scenario when an invalid service identity type is used.
@@ -14,9 +14,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceIdentitiy()
         {
-            ServiceProvider.Collection.Clear();
+            ServiceLocator.Collection.Clear();
             Assert.Throws<InvalidServiceIdentityTypeException>(() => {
-                ServiceProvider.AddService<IInvalidServiceIdentityType, InvalidServiceIdentityType>();
+                ServiceLocator.AddService<IInvalidServiceIdentityType, InvalidServiceIdentityType>();
             });
         }
 
@@ -26,9 +26,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceImplementation()
         {
-            ServiceProvider.Collection.Clear();
+            ServiceLocator.Collection.Clear();
             Assert.Throws<InvalidServiceImplementationException>(() => {
-                ServiceProvider.AddService<IInvalidServiceImplementationType, InvalidServiceImplementationType>();
+                ServiceLocator.AddService<IInvalidServiceImplementationType, InvalidServiceImplementationType>();
             });
         }
 
@@ -38,10 +38,10 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailDuplicateServiceIdentity()
         {
-            ServiceProvider.Collection.Clear();
-            ServiceProvider.AddService<IDuplicateIdentityType, DuplicateIdentityTypeA>();
+            ServiceLocator.Collection.Clear();
+            ServiceLocator.AddService<IDuplicateIdentityType, DuplicateIdentityTypeA>();
             Assert.Throws<DuplicateServiceIdentityException>(() => {
-                ServiceProvider.AddService<IDuplicateIdentityType, DuplicateIdentitiyTypeB>();
+                ServiceLocator.AddService<IDuplicateIdentityType, DuplicateIdentitiyTypeB>();
             });
         }
 
@@ -51,10 +51,10 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailDuplicateServiceImplementation()
         {
-            ServiceProvider.Collection.Clear();
-            ServiceProvider.AddService<IDuplicateImplementationTypeA, DuplicateImplementationType>();
+            ServiceLocator.Collection.Clear();
+            ServiceLocator.AddService<IDuplicateImplementationTypeA, DuplicateImplementationType>();
             Assert.Throws<DuplicateServiceImplementationException>(() => {
-                ServiceProvider.AddService<IDuplicateImplementationTypeB, DuplicateImplementationType>();
+                ServiceLocator.AddService<IDuplicateImplementationTypeB, DuplicateImplementationType>();
             });
         }
 
@@ -64,9 +64,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailMissingPrivateDependencySetter()
         {
-            ServiceProvider.Collection.Clear();
+            ServiceLocator.Collection.Clear();
             Assert.Throws<MissingServiceDependencySetterException>(() => {
-                ServiceProvider.AddService<IMissingPrivateDependencySetter, MissingPrivateDependencySetter>();
+                ServiceLocator.AddService<IMissingPrivateDependencySetter, MissingPrivateDependencySetter>();
             });
         }
 
@@ -76,9 +76,9 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailInvalidServiceDependencyType()
         {
-            ServiceProvider.Collection.Clear();
+            ServiceLocator.Collection.Clear();
             Assert.Throws<InvalidServiceDependencyTypeException>(() => {
-                ServiceProvider.AddService<IInvalidServiceDependencyType, InvalidServiceDependencyType>();
+                ServiceLocator.AddService<IInvalidServiceDependencyType, InvalidServiceDependencyType>();
             });
         }
 
@@ -88,8 +88,8 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailServiceNotFound()
         {
-            ServiceProvider.Collection.Clear();
-            Assert.Throws<ServiceNotFoundException>(() => ServiceProvider.GetService<ITestService>());
+            ServiceLocator.Collection.Clear();
+            Assert.Throws<ServiceNotFoundException>(() => ServiceLocator.GetService<ITestService>());
         }
 
         /// <summary>
@@ -98,20 +98,20 @@ namespace GameUtilities.Tests
         [Test]
         public static void FailCircularDependency()
         {
-            ServiceProvider.Collection.Clear();
-            ServiceProvider.AddService<ICircularDependencyA, CircularDependencyA>();
+            ServiceLocator.Collection.Clear();
+            ServiceLocator.AddService<ICircularDependencyA, CircularDependencyA>();
             Assert.Multiple(() => {
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    ServiceProvider.AddService<ICircularDependencyB, CircularDependencyB>();
+                    ServiceLocator.AddService<ICircularDependencyB, CircularDependencyB>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    ServiceProvider.AddService<ICircularDependencyC, CircularDependencyC>();
+                    ServiceLocator.AddService<ICircularDependencyC, CircularDependencyC>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    ServiceProvider.AddService<ICircularDependencyD, CircularDependencyD>();
+                    ServiceLocator.AddService<ICircularDependencyD, CircularDependencyD>();
                 });
                 Assert.Throws<CircularServiceDependencyException>(() => {
-                    ServiceProvider.AddService<ICircularDependencyE, CircularDependencyE>();
+                    ServiceLocator.AddService<ICircularDependencyE, CircularDependencyE>();
                 });
             });
         }
