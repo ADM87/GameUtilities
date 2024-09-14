@@ -9,7 +9,7 @@ namespace ADM87.GameUtilities.Services
     /// <summary>
     /// Provides a collection of services and methods for managing and retrieving them.
     /// </summary>
-    public static class ServiceProvider
+    public static class ServiceLocator
     {
         internal static ServiceCollection Collection { get; } = new ServiceCollection();
 
@@ -43,7 +43,7 @@ namespace ADM87.GameUtilities.Services
         }
 
         /// <summary>
-        /// Adds a service to the service provider.
+        /// Adds a service to the service locator.
         /// </summary>
         /// <typeparam name="TIdentity"></typeparam>
         /// <typeparam name="TImplementation"></typeparam>
@@ -52,7 +52,7 @@ namespace ADM87.GameUtilities.Services
             => AddService(typeof(TIdentity), typeof(TImplementation), serviceLifeTime);
 
         /// <summary>
-        /// Adds a service to the service provider.
+        /// Adds a service to the service locator.
         /// </summary>
         /// <param name="identityType"></param>
         /// <param name="implementationType"></param>
@@ -92,7 +92,7 @@ namespace ADM87.GameUtilities.Services
         }
 
         /// <summary>
-        /// Determines if the service provider contains a service of the specified type <typeparamref name="T"/>.
+        /// Determines if the service locator contains a service of the specified type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -100,7 +100,7 @@ namespace ADM87.GameUtilities.Services
             => HasService(typeof(T));
 
         /// <summary>
-        /// Determines if the service provider contains a service of the specified type.
+        /// Determines if the service locator contains a service of the specified type.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -116,7 +116,7 @@ namespace ADM87.GameUtilities.Services
             => (T)GetService(typeof(T));
 
         /// <summary>
-        /// Retrieves an instance of the specified type from the service provider.
+        /// Retrieves an instance of the specified type from the service locator.
         /// </summary>
         /// <param name="type">The type of the instance to retrieve.</param>
         /// <returns>An instance of the specified type.</returns>
