@@ -124,7 +124,7 @@ namespace GameUtilities.Tests
             ServiceProvider.Collection.Clear();
             ServiceProvider.AddService<ICollectedService, CollectedService>();
             InjectionTarget target = new InjectionTarget();
-            ServiceProvider.InjectDependencies(target);
+            ServiceProvider.ResolveDependencies(target);
             Assert.Multiple(() =>
             {
                 Assert.That(target.CollectedService, Is.Not.Null);

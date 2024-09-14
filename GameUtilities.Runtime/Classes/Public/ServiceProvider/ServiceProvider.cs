@@ -139,10 +139,10 @@ namespace ADM87.GameUtilities.Services
         }
 
         /// <summary>
-        /// Injects dependencies into the specified target object.
+        /// Resolves the service dependencies of a given object.
         /// </summary>
         /// <param name="target"></param>
-        public static void InjectDependencies(object target)
+        public static void ResolveDependencies(object target)
         {
             IEnumerable<PropertyInfo> properties = GetServiceDependencies(target.GetType());
             foreach (PropertyInfo property in properties)
