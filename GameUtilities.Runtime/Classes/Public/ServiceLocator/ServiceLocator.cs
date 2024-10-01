@@ -137,6 +137,24 @@ namespace ADM87.GameUtilities.Services
 
             return instance;
         }
+        
+        /// <summary>
+        /// Retrieves all services of the specified type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IEnumerable<T> GetServicesOfType<T>()
+        {
+            List<T> services = new List<T>();
+            Type type = typeof(T);
+
+            foreach (ServiceDefinition definition in Collection.Values)
+            {
+                if (definition.Identity == type || definition.Identity.IsAssignableFrom(type))
+                    services.Add((T)GetService(definition.Identity));
+            }
+            return services;
+        }
 
         /// <summary>
         /// Resolves the service dependencies of a given object.
